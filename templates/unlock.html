@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TradeBot — Unlock</title>
+  <style>
+    :root{--bg:#0d0d0d;--surface:#161616;--border:#2a2a2a;--green:#00c896;--red:#ff4d4d;--text:#e0e0e0;--muted:#666;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+    .box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:36px 32px;width:100%;max-width:380px;text-align:center;}
+    .lock{font-size:36px;margin-bottom:16px;}
+    .logo{font-size:22px;font-weight:700;color:var(--green);margin-bottom:4px;}.logo span{color:var(--text);}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:28px;text-align:center;}
+    label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px;text-align:left;}
+    input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text);font-size:13px;margin-bottom:16px;}
+    input:focus{outline:none;border-color:var(--green);}
+    button{width:100%;background:var(--green);color:#000;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;}
+    .error{background:#2a0f0f;color:var(--red);border:1px solid #4a1212;border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:14px;text-align:left;}
+  </style>
+</head>
+<body>
+<div class="box">
+  <div class="lock">🔒</div>
+  <div class="logo">Trade<span>Bot</span></div>
+  <p class="sub">Enter your master password to unlock</p>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="POST">
+    <label>Master Password</label>
+    <input type="password" name="password" placeholder="Your master password" autofocus required>
+    <button type="submit">Unlock →</button>
+  </form>
+  <button type="button" onclick="startDemo()"
+    style="width:100%;margin-top:14px;background:transparent;color:var(--green);border:1px solid var(--green);border-radius:6px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;">
+    🧪 Run local demo instead
+  </button>
+</div>
+<script>
+async function startDemo() {
+  const r = await fetch('/api/bot/demo', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+  const d = await r.json();
+  if (d.ok) window.location.href = '/';
+  else alert(d.error || 'Demo failed');
+}
+</script>
+</body>
+</html>

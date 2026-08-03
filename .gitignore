@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+stats.json
+robinhood_cache.json
+*.log
+.DS_Store

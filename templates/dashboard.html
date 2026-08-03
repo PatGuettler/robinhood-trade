@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}— Dashboard{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+  <h1>Dashboard</h1>
+  <span id="bot-badge" class="badge {% if bot.running %}badge-green{% else %}badge-red{% endif %}">
+    {% if bot.running %}● Running{% else %}● Stopped{% endif %}
+  </span>
+</div>
+<p class="subtitle" id="bot-status-text">{{ bot.status }}</p>
+
+<!-- Start / Stop -->
+<div class="card" style="padding:18px 22px;">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <button id="start-btn" class="btn btn-primary" onclick="startBot()" {% if bot.running %}disabled{% endif %}>▶ Start Bot</button>
+    <button id="demo-btn"  class="btn btn-ghost"   onclick="startDemo()" {% if bot.running %}disabled{% endif %}>🧪 Run Demo</button>
+    <button id="stop-btn"  class="btn btn-stop"    onclick="stopBot()"  {% if not bot.running %}disabled{% endif %}>■ Stop Bot</button>
+    <span style="font-size:12px;color:var(--muted);margin-left:4px;" id="scan-info"></span>
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:12px;margin-bottom:0;">
+    <b style="color:var(--text);">Run Demo</b> uses fake quotes + simulated Claude — no API keys needed.
+    Approve or decline alerts below. Nothing hits Robinhood.
+  </p>
+</div>
+
+<!-- Stats row -->
+<div class="grid-3" style="margin-bottom:0;">
+  <div class="card stat-box">
+    <div class="stat-label">Today's Alerts</div>
+    <div class="stat-value" id="s-alerts">—</div>
+  </div>
+  <div class="card stat-box">
+    <div class="stat-label">Today's Trades</div>
+    <div class="stat-value" id="s-trades">—</div>
+  </div>
+  <div class="card stat-box">
+    <div class="stat-label">Today's P&amp;L</div>
+    <div class="stat-value" id="s-pnl">—</div>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top:16px;">
+  <!-- Config health -->
+  <div class="card">
+    <div class="card-header"><h2>Configuration</h2></div>
+    {% set checks = [
+      ('Claude API',         meta.has_claude),
+      ('Gmail / Email',      meta.has_gmail),
+      ('Alert Email',        meta.has_alert_email),
+      ('Robinhood MCP',      meta.has_robinhood),
+      ('Sell Strategy',      meta.has_sell_strategy),
+      ('Trading Rules',      meta.has_trading_rules),
+    ] %}
+    {% for label, ok in checks %}
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
+      <span>{{ label }}</span>
+      <span class="badge {% if ok %}badge-green{% else %}badge-yellow{% endif %}">
+        {% if ok %}✓ Good to go{% else %}⚠ Not set{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+    <div style="margin-top:14px;">
+      <a href="/configure" class="btn btn-ghost btn-sm">Configure →</a>
+    </div>
+  </div>
+
+  <!-- Pending + recent trades -->
+  <div class="card">
+    <div class="card-header"><h2>Pending Approvals</h2></div>
+    <div id="pending-list" style="font-size:13px;color:var(--muted);margin-bottom:16px;">None</div>
+    <h2 style="margin-bottom:10px;">Recent Alerts This Session</h2>
+    <div id="trades-list" style="font-size:12px;font-family:var(--mono);">
+      <span style="color:var(--muted);">No alerts yet.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Live log -->
+<div class="card">
+  <div class="card-header">
+    <h2>Live Log</h2>
+    <span style="font-size:11px;color:var(--muted);margin-left:auto;">Refreshes every 5s</span>
+  </div>
+  <div class="log-wrap" id="log-wrap">
+    <div class="log-line log-INFO"><span class="log-time">--:--:--</span><span class="log-msg">Waiting for bot to start...</span></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function startBot() {
+  document.getElementById('start-btn').disabled = true;
+  const r = await post('/api/bot/start');
+  if (r.ok) toast('Bot started ✓');
+  else { toast('Failed to start', false); document.getElementById('start-btn').disabled = false; }
+  refresh();
+}
+async function startDemo() {
+  document.getElementById('demo-btn').disabled = true;
+  const r = await post('/api/bot/demo');
+  if (r.ok) { toast('Demo started ✓'); window.location.href = '/'; }
+  else { toast('Demo failed', false); document.getElementById('demo-btn').disabled = false; }
+  refresh();
+}
+async function stopBot() {
+  document.getElementById('stop-btn').disabled = true;
+  await post('/api/bot/stop');
+  toast('Bot stopped');
+  refresh();
+}
+async function approve(ticker) {
+  const r = await post('/api/bot/approve', {ticker});
+  if (r.ok) toast(`Approved ${ticker} ✓`);
+  else toast(r.error || 'Approve failed', false);
+  refresh();
+}
+async function decline(ticker) {
+  const r = await post('/api/bot/decline', {ticker});
+  if (r.ok) toast(`Declined ${ticker}`);
+  else toast(r.error || 'Decline failed', false);
+  refresh();
+}
+
+async function refresh() {
+  const r = await fetch('/api/bot/status');
+  if (!r.ok) return;
+  const d = await r.json();
+
+  const badge = document.getElementById('bot-badge');
+  const label = d.demo_mode ? '● Demo' : (d.running ? '● Running' : '● Stopped');
+  badge.textContent = d.running ? label : '● Stopped';
+  badge.className   = 'badge ' + (d.running ? (d.demo_mode ? 'badge-yellow' : 'badge-green') : 'badge-red');
+  document.getElementById('bot-status-text').textContent = d.status;
+
+  document.getElementById('start-btn').disabled = d.running;
+  document.getElementById('demo-btn').disabled  = d.running;
+  document.getElementById('stop-btn').disabled  = !d.running;
+  document.getElementById('scan-info').textContent =
+    d.scans ? `${d.scans} scan${d.scans !== 1 ? 's' : ''} this session` : '';
+
+  const t = d.today || {};
+  const at = d.all_time || {};
+  document.getElementById('s-alerts').textContent = at.alerts_sent ?? '0';
+  document.getElementById('s-trades').textContent = t.trades ?? '0';
+  const pnlEl = document.getElementById('s-pnl');
+  const pnl = t.profit ?? 0;
+  pnlEl.textContent = (pnl >= 0 ? '+' : '') + fmt$(pnl);
+  pnlEl.style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+  if (d.log && d.log.length) {
+    document.getElementById('log-wrap').innerHTML = d.log.map(l =>
+      `<div class="log-line log-${l.level}"><span class="log-time">${l.time}</span><span class="log-msg">${l.message}</span></div>`
+    ).join('');
+    document.getElementById('log-wrap').scrollTop = 9999;
+  }
+
+  const pend = document.getElementById('pending-list');
+  if (d.pending_details && d.pending_details.length) {
+    pend.innerHTML = d.pending_details.map(p => `
+      <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px;">
+          <div>
+            <b style="color:var(--green);">${p.ticker}</b>
+            <span style="color:var(--muted);font-size:12px;margin-left:8px;">
+              ${fmt$(p.price)} → ${fmt$(p.target)} · ${p.confidence}
+            </span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-primary btn-sm" onclick="approve('${p.ticker}')">YES</button>
+            <button class="btn btn-stop btn-sm" onclick="decline('${p.ticker}')">NO</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.4;">${p.reason || ''}</div>
+      </div>`).join('');
+  } else {
+    pend.innerHTML = '<span style="color:var(--muted);">None</span>';
+  }
+
+  const tl = document.getElementById('trades-list');
+  if (d.trades && d.trades.length) {
+    tl.innerHTML = [...d.trades].reverse().map(t =>
+      `<div style="padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;">
+        <span><span style="color:var(--muted);">${t.time}</span>
+        <b style="color:var(--green);margin:0 6px;">${t.ticker}</b>
+        ${fmt$(t.price)} → ${fmt$(t.target)}</span>
+        <span style="color:var(--muted);font-size:11px;">${t.status}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+setInterval(refresh, 3000);
+refresh();
+</script>
+{% endblock %}

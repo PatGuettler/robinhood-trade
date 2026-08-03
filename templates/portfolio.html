@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+{% block title %}— Portfolio{% endblock %}
+
+{% block content %}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:10px;">
+  <h1>Portfolio</h1>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="sync-badge" class="badge badge-gray">Connecting...</span>
+    <span id="sync-time" style="font-size:12px;color:var(--muted);"></span>
+    <button class="btn btn-ghost btn-sm" onclick="forceRefresh()">↻ Refresh</button>
+  </div>
+</div>
+<p class="subtitle">Live data from your Robinhood Agentic account — auto-refreshes every 30 seconds</p>
+
+<div id="err-banner"    class="alert alert-error"   style="display:none;"><b>Sync error:</b> <span id="err-msg"></span></div>
+<div id="notoken-banner" class="alert alert-warning" style="display:none;">
+  ⚠ No Robinhood MCP token configured. <a href="/configure" style="color:var(--yellow);">Add it in Configure →</a>
+</div>
+
+<!-- Stats bar -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;">
+  {% for id, label in [('stat-bp','Buying Power'),('stat-pv','Portfolio Value'),('stat-unreal','Unrealized P&L'),('stat-real','Realized P&L'),('stat-wr','Win Rate'),('stat-ct','Closed Trades')] %}
+  <div class="card stat-box" style="padding:14px;">
+    <div class="stat-label">{{ label }}</div>
+    <div class="stat-value" id="{{ id }}" style="font-size:20px;">—</div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Tabs -->
+<div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px;">
+  {% for tid, tlabel in [('open-orders','Open Orders'),('positions','Positions'),('order-history','Order History'),('closed-trades','Closed Trades (P&L)')] %}
+  <button class="tab-btn {% if loop.first %}active{% endif %}"
+          id="tab-{{ tid }}" onclick="showTab('{{ tid }}')">{{ tlabel }}</button>
+  {% endfor %}
+</div>
+
+<!-- Open Orders -->
+<div id="pane-open-orders" class="tab-pane">
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="dtable"><thead><tr>
+      <th>Ticker</th><th>Side</th><th>Type</th><th>Qty</th>
+      <th>Limit Price</th><th>Filled</th><th>State</th><th>Created</th>
+    </tr></thead>
+    <tbody id="tb-open-orders"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Positions -->
+<div id="pane-positions" class="tab-pane" style="display:none;">
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="dtable"><thead><tr>
+      <th>Ticker</th><th>Shares</th><th>Avg Cost</th><th>Current</th>
+      <th>Market Value</th><th>Cost Basis</th><th>Unrealized P&L</th><th>Return</th>
+    </tr></thead>
+    <tbody id="tb-positions"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Order History -->
+<div id="pane-order-history" class="tab-pane" style="display:none;">
+  <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+    <input type="text" id="oh-search" placeholder="Filter ticker..." oninput="renderOrderHistory()"
+      style="width:160px;padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;">
+    <select id="oh-state" onchange="renderOrderHistory()"
+      style="padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;">
+      <option value="">All states</option>
+      <option value="filled">Filled</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="queued">Open</option>
+    </select>
+    <select id="oh-side" onchange="renderOrderHistory()"
+      style="padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;">
+      <option value="">Buy &amp; Sell</option>
+      <option value="buy">Buy only</option>
+      <option value="sell">Sell only</option>
+    </select>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="dtable"><thead><tr>
+      <th>Date</th><th>Ticker</th><th>Side</th><th>Type</th>
+      <th>Qty</th><th>Limit</th><th>Avg Fill</th><th>Total</th><th>State</th>
+    </tr></thead>
+    <tbody id="tb-order-history"><tr><td colspan="9" class="empty">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Closed Trades -->
+<div id="pane-closed-trades" class="tab-pane" style="display:none;">
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="dtable"><thead><tr>
+      <th>Closed</th><th>Ticker</th><th>Buy Price</th>
+      <th>Sell Price</th><th>Shares</th><th>P&amp;L</th><th>Result</th>
+    </tr></thead>
+    <tbody id="tb-closed"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+.tab-btn {
+  background:none;border:none;border-bottom:2px solid transparent;
+  color:var(--muted);font-size:13px;padding:10px 16px;cursor:pointer;
+  font-family:var(--font);transition:color .15s,border-color .15s;margin-bottom:-1px;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { color:var(--text);border-bottom-color:var(--green);font-weight:600; }
+.dtable { width:100%;border-collapse:collapse;font-size:12px; }
+.dtable th {
+  background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;
+  text-align:left;border-bottom:1px solid var(--border);
+}
+.dtable td { padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono); }
+.dtable tr:last-child td { border-bottom:none; }
+.dtable tr:hover td { background:var(--surface2); }
+td.empty { text-align:center;color:var(--muted);padding:28px;font-family:var(--font); }
+.pill {
+  display:inline-block;padding:2px 8px;border-radius:10px;
+  font-size:10px;font-weight:700;font-family:var(--font);
+  text-transform:uppercase;letter-spacing:.2px;
+}
+.pill-g{background:var(--green-dim);color:var(--green);}
+.pill-r{background:var(--red-dim);color:var(--red);}
+.pill-y{background:var(--yellow-dim);color:var(--yellow);}
+.pill-gray{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let _orders = [];
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + id).style.display = 'block';
+  document.getElementById('tab-'  + id).classList.add('active');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function pill(state) {
+  const map = {filled:'pill-g',partially_filled:'pill-y',queued:'pill-y',
+    confirmed:'pill-y',unconfirmed:'pill-y',cancelled:'pill-gray',
+    rejected:'pill-r',failed:'pill-r'};
+  return `<span class="pill ${map[state]||'pill-gray'}">${state}</span>`;
+}
+function sidePill(s) {
+  return s==='buy'
+    ?`<span class="pill pill-g">Buy</span>`
+    :`<span class="pill pill-r">Sell</span>`;
+}
+function q(n,dec=4) {
+  const v=parseFloat(n);
+  return isNaN(v)?'—':v.toLocaleString('en-US',{maximumFractionDigits:dec});
+}
+
+// ── Stats bar ─────────────────────────────────────────────────────────────────
+function updateStats(d) {
+  const b = d.balances || {};
+  const s = d.stats    || {};
+  const bp = b.buying_power ?? b.cash;
+  set('stat-bp',   bp != null ? fmt$(bp) : '—');
+  const pv = (d.positions||[]).reduce((a,p)=>a+parseFloat(p.market_value||0),0);
+  set('stat-pv',   pv ? fmt$(pv) : '—');
+  setPN('stat-unreal', s.total_unrealized_pnl);
+  setPN('stat-real',   s.total_realized_pnl);
+  const wr = s.win_rate;
+  const wrEl = document.getElementById('stat-wr');
+  wrEl.textContent = wr != null ? wr + '%' : '—';
+  wrEl.style.color = wr >= 50 ? 'var(--green)' : wr > 0 ? 'var(--yellow)' : 'var(--text)';
+  set('stat-ct', s.total_closed_trades ?? '—');
+}
+function set(id, v) { document.getElementById(id).textContent = v; }
+function setPN(id, n) {
+  const el = document.getElementById(id);
+  const v  = parseFloat(n);
+  el.textContent = isNaN(v) ? '—' : (v>=0?'+':'')+fmt$(v);
+  el.style.color = isNaN(v) ? 'var(--text)' : v>=0 ? 'var(--green)' : 'var(--red)';
+}
+
+// ── Sync status ───────────────────────────────────────────────────────────────
+function updateSync(d) {
+  const badge = document.getElementById('sync-badge');
+  const time  = document.getElementById('sync-time');
+  document.getElementById('err-banner').style.display    = 'none';
+  document.getElementById('notoken-banner').style.display = 'none';
+
+  if (d.sync_status === 'ok') {
+    badge.textContent = '● Synced';
+    badge.className   = 'badge badge-green';
+    time.textContent  = `Last sync: ${d.last_sync}`;
+  } else if (d.sync_status === 'no_token') {
+    badge.textContent = '⚠ No token';
+    badge.className   = 'badge badge-yellow';
+    document.getElementById('notoken-banner').style.display = 'block';
+  } else if (d.sync_status === 'auth_error') {
+    badge.textContent = '✗ Auth error';
+    badge.className   = 'badge badge-red';
+    document.getElementById('err-banner').style.display = 'block';
+    document.getElementById('err-msg').textContent = d.sync_error || 'Token invalid or expired';
+  } else if (d.sync_status === 'error') {
+    badge.textContent = '⚠ Sync error';
+    badge.className   = 'badge badge-yellow';
+    document.getElementById('err-banner').style.display = 'block';
+    document.getElementById('err-msg').textContent = d.sync_error || 'Unknown error';
+  } else {
+    badge.textContent = '⏳ Connecting';
+    badge.className   = 'badge badge-gray';
+  }
+}
+
+// ── Render tables ─────────────────────────────────────────────────────────────
+function renderOpenOrders(orders) {
+  const open = orders.filter(o => ['queued','unconfirmed','confirmed','partially_filled'].includes(o.state));
+  const tb   = document.getElementById('tb-open-orders');
+  if (!open.length) { tb.innerHTML='<tr><td colspan="8" class="empty">No open orders</td></tr>'; return; }
+  tb.innerHTML = open.map(o => `<tr>
+    <td><b>${o.symbol||o.ticker||'—'}</b></td>
+    <td>${sidePill(o.side)}</td>
+    <td style="color:var(--muted)">${o.type||'—'}</td>
+    <td>${q(o.quantity)}</td>
+    <td>${fmt$(o.price||o.limit_price)}</td>
+    <td>${q(o.cumulative_quantity||o.filled_quantity||0)}</td>
+    <td>${pill(o.state)}</td>
+    <td style="color:var(--muted)">${fmtDate(o.created_at)}</td>
+  </tr>`).join('');
+}
+
+function renderPositions(positions) {
+  const tb = document.getElementById('tb-positions');
+  if (!positions.length) { tb.innerHTML='<tr><td colspan="8" class="empty">No open positions</td></tr>'; return; }
+  tb.innerHTML = positions.map(p => {
+    const pnl = parseFloat(p.unrealized_pnl||0);
+    const pct = parseFloat(p.unrealized_pnl_pct||0);
+    return `<tr>
+      <td><b>${p.symbol||p.ticker||'—'}</b></td>
+      <td>${q(p.quantity)}</td>
+      <td>${fmt$(p.average_buy_price)}</td>
+      <td>${fmt$(p.current_price)}</td>
+      <td>${fmt$(p.market_value)}</td>
+      <td>${fmt$(p.cost_basis)}</td>
+      <td style="${pnlStyle(pnl)}">${pnl>=0?'+':''}${fmt$(pnl)}</td>
+      <td style="${pnlStyle(pct)}">${fmtPct(pct)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOrderHistory() {
+  const search = (document.getElementById('oh-search').value||'').toUpperCase();
+  const state  = document.getElementById('oh-state').value;
+  const side   = document.getElementById('oh-side').value;
+  const tb     = document.getElementById('tb-order-history');
+
+  const filtered = _orders.filter(o => {
+    const ticker = (o.symbol||o.ticker||'').toUpperCase();
+    if (search && !ticker.includes(search)) return false;
+    if (state  && o.state !== state)        return false;
+    if (side   && o.side  !== side)         return false;
+    return true;
+  });
+
+  if (!filtered.length) { tb.innerHTML='<tr><td colspan="9" class="empty">No orders match filter</td></tr>'; return; }
+  tb.innerHTML = filtered.slice(0, 100).map(o => {
+    const qty  = parseFloat(o.quantity||0);
+    const fill = parseFloat(o.average_price||0);
+    const tot  = qty * fill;
+    return `<tr>
+      <td style="color:var(--muted)">${fmtDate(o.created_at)}</td>
+      <td><b>${o.symbol||o.ticker||'—'}</b></td>
+      <td>${sidePill(o.side)}</td>
+      <td style="color:var(--muted)">${o.type||'—'}</td>
+      <td>${q(o.quantity)}</td>
+      <td>${fmt$(o.price||o.limit_price)}</td>
+      <td>${fill ? fmt$(fill) : '—'}</td>
+      <td>${tot  ? fmt$(tot)  : '—'}</td>
+      <td>${pill(o.state)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderClosedTrades(pairs) {
+  const tb = document.getElementById('tb-closed');
+  if (!pairs||!pairs.length) {
+    tb.innerHTML='<tr><td colspan="7" class="empty">No closed trades yet — limit sells appear here once they fill on Robinhood</td></tr>';
+    return;
+  }
+  const sorted = [...pairs].sort((a,b)=>(b.closed_at||'').localeCompare(a.closed_at||''));
+  tb.innerHTML = sorted.map(t => {
+    const pnl = parseFloat(t.pnl||0);
+    return `<tr>
+      <td style="color:var(--muted)">${fmtDate(t.closed_at)}</td>
+      <td><b>${t.ticker}</b></td>
+      <td>${fmt$(t.buy_price)}</td>
+      <td>${fmt$(t.sell_price)}</td>
+      <td>${q(t.qty)}</td>
+      <td style="${pnlStyle(pnl)}">${pnl>=0?'+':''}${fmt$(pnl)}</td>
+      <td>${t.result==='win'
+        ?'<span class="pill pill-g">Win ✓</span>'
+        :'<span class="pill pill-r">Loss ✗</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Load data ─────────────────────────────────────────────────────────────────
+async function loadData() {
+  const r = await fetch('/api/robinhood/data');
+  if (!r.ok) return;
+  const j = await r.json();
+  if (!j.ok) return;
+  const d = j.data;
+
+  updateSync(d);
+  updateStats(d);
+  renderOpenOrders(d.orders||[]);
+  renderPositions(d.positions||[]);
+  _orders = d.orders||[];
+  renderOrderHistory();
+  renderClosedTrades((d.stats||{}).closed_trade_pairs||[]);
+}
+
+async function forceRefresh() {
+  document.getElementById('sync-badge').textContent = '⏳ Syncing...';
+  await post('/api/robinhood/refresh');
+  setTimeout(loadData, 4500);
+}
+
+loadData();
+setInterval(loadData, 30000);
+</script>
+{% endblock %}
