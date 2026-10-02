@@ -158,17 +158,19 @@ def _reference_daily(symbol: str, primary_source: str) -> tuple[str, dict[date, 
         return "stooq", {d.day: d for d in marketdata.stooq_daily(symbol)}
     except Exception as e:  # noqa: BLE001
         errors.append(f"stooq: {e}")
-    alt = "alpaca" if primary_source != "alpaca" else "yahoo"
-    try:
-        end = date.today()
-        if alt == "alpaca" and marketdata.alpaca_keys():
+    end = date.today()
+    if primary_source != "alpaca" and marketdata.alpaca_keys():
+        try:
             rows = marketdata.alpaca_daily([symbol], end - timedelta(days=120), end).get(symbol, [])
-        else:
-            rows = marketdata.yahoo_daily(symbol, end - timedelta(days=120), end)
-            alt += " (same vendor, daily endpoint)"
-        return alt, {d.day: d for d in rows}
+            return "alpaca", {d.day: d for d in rows}
+        except Exception as e:  # noqa: BLE001
+            errors.append(f"alpaca: {e}")
+    try:
+        rows = marketdata.yahoo_daily(symbol, end - timedelta(days=120), end)
+        label = "yahoo daily" + (" (same vendor)" if primary_source == "yahoo" else "")
+        return label, {d.day: d for d in rows}
     except Exception as e:  # noqa: BLE001
-        errors.append(f"{alt}: {e}")
+        errors.append(f"yahoo: {e}")
     raise RuntimeError("; ".join(errors))
 
 
@@ -203,7 +205,10 @@ def independent_price_check(fills, slippage_bps, label):
         else:
             skipped.append(f["fill_id"])
         evidence.append(row)
-    detail = f"{len(fills) - len(skipped)} fills checked against an independent daily source"
+    detail = f"{len(fills) - len(skipped)} fills checked against a second daily price source"
+    if any("same vendor" in r["ref_source"] for r in evidence):
+        detail += (" — the independent source (Stooq) was unavailable, so this compared against the same "
+                   "vendor's daily data; add free Alpaca keys on Setup for a truly independent check")
     if skipped:
         detail += f"; {len(skipped)} could not be checked (synthetic data or no reference bar)"
     chk = _check("independent_prices", f"{label}: fill prices match an independent data source", bad,
