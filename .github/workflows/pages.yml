@@ -1,5 +1,8 @@
 name: Deploy dashboard site
 
+# Publishes site/ to the gh-pages branch, which GitHub Pages serves at
+# https://<owner>.github.io/<repo>/ (Settings → Pages → Deploy from branch: gh-pages).
+
 on:
   push:
     branches: [main]
@@ -7,9 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -18,14 +19,16 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Push site/ to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd site
+          touch .nojekyll
+          git init --quiet -b gh-pages
+          git add -A
+          git -c user.name="tradebot-pages" -c user.email="tradebot-pages@users.noreply.github.com" \
+            commit --quiet -m "Deploy site from ${GITHUB_SHA::7}"
+          git push --quiet --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
