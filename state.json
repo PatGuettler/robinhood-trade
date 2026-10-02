@@ -1,0 +1,15 @@
+{
+  "account_id": 2,
+  "starting_cash": 10000.0,
+  "cash": 10000.0,
+  "realized_pnl": 0.0,
+  "positions": {},
+  "pending": {},
+  "marks": {},
+  "entered_on": {},
+  "last_signal": {},
+  "start_ts": "2026-10-02T09:54:19.301454-04:00",
+  "last_bar_ts": null,
+  "next_trade_id": 1,
+  "next_fill_id": 1
+}

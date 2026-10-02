@@ -1,0 +1,22 @@
+{
+  "starting_cash": 10000.0,
+  "ending_equity": 10000.0,
+  "return_usd": 0.0,
+  "return_pct": 0.0,
+  "cash": 10000.0,
+  "realized_pnl": 0,
+  "unrealized_pnl": 0.0,
+  "trades_opened": 0,
+  "trades_closed": 0,
+  "open_positions": 0,
+  "wins": 0,
+  "losses": 0,
+  "win_rate": 0.0,
+  "max_drawdown_pct": 0.0,
+  "per_ticker": {},
+  "account_id": 2,
+  "as_of": null,
+  "updated_at": "2026-10-02T09:55:19.301454-04:00",
+  "data_source": "yahoo",
+  "strategy_hash": "f74a6ab59f"
+}

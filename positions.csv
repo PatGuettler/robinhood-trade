@@ -1,0 +1,1 @@
+account_id,run_id,trade_id,ticker,qty,entry_price,entry_ts,cost_basis,target,stop,mark_price,mark_ts,market_value,unrealized_pnl,unrealized_pct

@@ -1,0 +1,60 @@
+run_id,mode,date,ticker,source,score,reason
+live-20261002-095519,live,2026-10-02,CTVA,scan,88.916,"4.0% avg daily range, 11.6× volume and -83.8% the day before"
+live-20261002-095519,live,2026-10-02,ACN,scan,82.653,"3.8% avg daily range, 4.9× volume and +15.8% the day before"
+live-20261002-095519,live,2026-10-02,FICO,scan,76.402,"4.7% avg daily range, 4.4× volume and +11.7% the day before"
+live-20261002-095519,live,2026-10-02,SNPS,scan,50.346,"4.0% avg daily range, 3.0× volume and +12.8% the day before"
+live-20261002-095519,live,2026-10-02,PSKY,scan,45.327,"5.8% avg daily range, 2.2× volume and -9.6% the day before"
+live-20261002-095519,live,2026-10-02,COHR,scan,44.49,"6.0% avg daily range, 1.8× volume and +10.9% the day before"
+live-20261002-095519,live,2026-10-02,LITE,scan,34.373,"6.2% avg daily range, 1.7× volume and +7.7% the day before"
+live-20261002-095519,live,2026-10-02,CIEN,scan,22.47,"5.7% avg daily range, 1.0× volume and +7.8% the day before"
+live-20261002-095519,live,2026-10-02,SOXL,scan,21.251,"6.7% avg daily range, 1.3× volume and +3.9% the day before"
+live-20261002-095519,live,2026-10-02,JBL,scan,20.585,"4.4% avg daily range, 1.9× volume and +4.5% the day before"
+live-20261002-095519,live,2026-10-02,CTSH,scan,19.958,"3.5% avg daily range, 2.1× volume and +6.0% the day before"
+live-20261002-095519,live,2026-10-02,MKC,scan,18.448,"2.9% avg daily range, 2.7× volume and -4.9% the day before"
+live-20261002-095519,live,2026-10-02,U,scan,17.273,"4.9% avg daily range, 1.0× volume and +6.5% the day before"
+live-20261002-095519,live,2026-10-02,APP,scan,16.336,"4.7% avg daily range, 1.6× volume and -3.1% the day before"
+live-20261002-095519,live,2026-10-02,SNAP,scan,16.323,"4.6% avg daily range, 1.3× volume and +4.6% the day before"
+live-20261002-095519,live,2026-10-02,RIOT,scan,16.085,"6.1% avg daily range, 1.2× volume and -2.7% the day before"
+live-20261002-095519,live,2026-10-02,TWLO,scan,14.66,"5.6% avg daily range, 1.1× volume and +3.0% the day before"
+live-20261002-095519,live,2026-10-02,CLSK,scan,14.542,"6.0% avg daily range, 1.1× volume and -2.8% the day before"
+live-20261002-095519,live,2026-10-02,S,scan,14.15,"5.3% avg daily range, 1.0× volume and +3.8% the day before"
+live-20261002-095519,live,2026-10-02,MU,scan,13.619,"3.7% avg daily range, 1.8× volume and +3.0% the day before"
+live-20261002-095519,live,2026-10-02,NU,scan,13.608,"3.0% avg daily range, 1.7× volume and +5.0% the day before"
+live-20261002-095519,live,2026-10-02,CDNS,scan,13.354,"3.4% avg daily range, 1.3× volume and +6.2% the day before"
+live-20261002-095519,live,2026-10-02,ON,scan,13.236,"4.5% avg daily range, 1.1× volume and +4.2% the day before"
+live-20261002-095519,live,2026-10-02,BA,scan,13.062,"3.3% avg daily range, 1.9× volume and +3.3% the day before"
+live-20261002-095519,live,2026-10-02,MSTR,scan,12.849,"5.3% avg daily range, 0.7× volume and +4.8% the day before"
+live-20261002-095519,live,2026-10-02,FDS,scan,12.552,"4.1% avg daily range, 1.5× volume and +2.8% the day before"
+live-20261002-095519,live,2026-10-02,VLO,scan,12.425,"4.7% avg daily range, 0.8× volume and +5.4% the day before"
+live-20261002-095519,live,2026-10-02,RDDT,scan,12.382,"4.5% avg daily range, 0.9× volume and +5.0% the day before"
+live-20261002-095519,live,2026-10-02,TEAM,scan,12.331,"4.5% avg daily range, 0.8× volume and +5.9% the day before"
+live-20261002-095519,live,2026-10-02,DKNG,scan,12.265,"5.5% avg daily range, 1.1× volume and +1.8% the day before"
+live-20261002-095519,live,2026-10-02,MPC,scan,12.071,"4.3% avg daily range, 0.7× volume and +6.3% the day before"
+live-20261002-095519,live,2026-10-02,GLW,scan,12.044,"4.5% avg daily range, 0.9× volume and +4.3% the day before"
+live-20261002-095519,live,2026-10-02,CDW,scan,11.863,"3.6% avg daily range, 1.0× volume and +6.0% the day before"
+live-20261002-095519,live,2026-10-02,MRNA,scan,11.255,"7.0% avg daily range, 0.7× volume and -1.9% the day before"
+live-20261002-095519,live,2026-10-02,ELF,scan,11.247,"4.0% avg daily range, 1.2× volume and +3.1% the day before"
+live-20261002-095519,live,2026-10-02,HUT,scan,11.213,"7.0% avg daily range, 1.0× volume and +0.3% the day before"
+live-20261002-095519,live,2026-10-02,SNDK,scan,11.162,"5.1% avg daily range, 0.9× volume and +2.7% the day before"
+live-20261002-095519,live,2026-10-02,GTLB,scan,10.976,"3.7% avg daily range, 0.9× volume and +5.7% the day before"
+live-20261002-095519,live,2026-10-02,AKAM,scan,10.968,"6.0% avg daily range, 1.2× volume and +0.5% the day before"
+live-20261002-095519,live,2026-10-02,GEN,scan,10.864,"5.6% avg daily range, 1.1× volume and +1.0% the day before"
+live-20261002-095519,live,2026-10-02,SYNA,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,MXL,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,IBRX,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,VECO,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,PENG,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,ACLS,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,APLD,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,BTDR,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,MARA,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,CRDO,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,ALGM,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,NVTS,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,ONTO,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,WULF,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,VSH,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,BLSH,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,RKLB,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,POWI,mover,,top gainer (Yahoo)
+live-20261002-095519,live,2026-10-02,RXO,mover,,top gainer (Yahoo)

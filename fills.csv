@@ -1,0 +1,1 @@
+account_id,run_id,mode,fill_id,trade_id,timestamp,ticker,side,qty,price,amount,fee,reason,target,stop,realized_pnl,cash_after,bar_ts,bar_open,bar_high,bar_low,bar_close,signal_change_pct,signal_vol_ratio,data_source,strategy_hash

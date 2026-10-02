@@ -2,3 +2,4 @@ run_id,mode,started_at,finished_at,status,bars_processed,fills,signals,equity,ca
 bt-20261002-082504,backtest,2026-10-02T08:25:04.811143-04:00,2026-10-02T08:25:06.460523-04:00,ok,3510,10,17,10000.28,8016.98,yahoo,"5 day(s) 2026-09-25..2026-10-01: +0.00% (4 closed, 2 open)"
 verify-20261002-082612,verify,2026-10-02T08:26:10.180867-04:00,2026-10-02T08:26:12.859652-04:00,ok,,,,,,,PASS: 12/14 checks passed
 verify-20261002-082813,verify,2026-10-02T08:28:09.620860-04:00,2026-10-02T08:28:13.507623-04:00,ok,,,,,,,PASS: 12/14 checks passed
+live-20261002-095519,live,2026-10-02T09:55:19.301438-04:00,2026-10-02T09:55:33.424078-04:00,ok,0,0,0,10000.0,10000.0,yahoo,"new paper account #2 with $10,000.00; watching 59 stocks today; "
