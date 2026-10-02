@@ -4,9 +4,11 @@ on:
   schedule:
     # Every 15 minutes, weekdays 13:00-20:59 UTC — covers the 9:30-16:00 ET
     # session in both EDT and EST. Runs outside market hours exit immediately.
-    - cron: "*/15 13-20 * * 1-5"
+    # Off-peak minutes: GitHub delays or drops schedules at :00/:15/:30/:45.
+    # A late or skipped run loses nothing — the next one processes every missed bar.
+    - cron: "7,22,37,52 13-20 * * 1-5"
     # Daily accuracy verification after the close.
-    - cron: "40 21 * * 1-5"
+    - cron: "47 21 * * 1-5"
   workflow_dispatch:
     inputs:
       command:
@@ -70,7 +72,7 @@ jobs:
           INPUT_COMMAND: ${{ inputs.command }}
         run: |
           if [ "$EVENT" = "schedule" ]; then
-            if [ "$SCHEDULE" = "40 21 * * 1-5" ]; then cmd=verify; else cmd=live; fi
+            if [ "$SCHEDULE" = "47 21 * * 1-5" ]; then cmd=verify; else cmd=live; fi
           else
             cmd="$INPUT_COMMAND"
           fi
