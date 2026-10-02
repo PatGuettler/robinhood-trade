@@ -1,11 +1,11 @@
 {
   "starting_cash": 10000.0,
-  "ending_equity": 9765.71,
-  "return_usd": -234.29,
-  "return_pct": -2.343,
+  "ending_equity": 9804.57,
+  "return_usd": -195.43,
+  "return_pct": -1.954,
   "cash": 5000.0,
   "realized_pnl": 0,
-  "unrealized_pnl": -234.29,
+  "unrealized_pnl": -195.43,
   "trades_opened": 5,
   "trades_closed": 0,
   "open_positions": 5,
@@ -15,8 +15,8 @@
   "max_drawdown_pct": 2.904,
   "per_ticker": {},
   "account_id": 2,
-  "as_of": "2026-10-02T15:05:00-04:00",
-  "updated_at": "2026-10-02T15:14:23.481698-04:00",
+  "as_of": "2026-10-02T15:55:00-04:00",
+  "updated_at": "2026-10-02T19:05:38.046241-04:00",
   "data_source": "yahoo",
   "strategy_hash": "f74a6ab59f"
 }
