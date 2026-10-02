@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://accounts.google.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://www.googleapis.com https://oauth2.googleapis.com https://cdn.jsdelivr.net https://accounts.google.com; frame-src https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>TradeBot Paper Setup</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <h1>Setup</h1>
+    <p class="subtitle">Everything the paper bot needs. Settings are saved to <code>paper_config.json</code> in your repo; keys and
+      tokens are stored as encrypted GitHub Actions secrets — never in the repo or this page.</p>
+
+    <div class="card">
+      <div class="card-head"><h2>Status</h2><div class="spacer"></div><button class="btn" id="recheck">↻ Re-check</button></div>
+      <div id="status"><p class="empty">Connect GitHub below to check status.</p></div>
+    </div>
+
+    <!-- 1. GitHub -->
+    <div class="card">
+      <div class="card-head"><h2>1 · Connect to GitHub</h2><span id="gh-badge"></span></div>
+      <p class="muted" style="margin-top:0">This page talks to your repository through the GitHub API. The token is kept only in this browser.</p>
+      <div class="grid2">
+        <div class="field"><label for="gh-owner">Owner</label><input type="text" id="gh-owner" placeholder="your-github-username"></div>
+        <div class="field"><label for="gh-repo">Repository</label><input type="text" id="gh-repo" placeholder="robinhood-trade"></div>
+      </div>
+      <div class="field">
+        <label for="gh-token">Fine-grained personal access token</label>
+        <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off">
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="gh-remember">
+          <span>Remember on this device. Leave unticked on shared computers; the token is then forgotten when you close the tab.</span></label>
+        <div class="hint">Create one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
+          → <i>Only select repositories</i>: this repo → Repository permissions: <b>Contents</b> read &amp; write, <b>Secrets</b> read &amp; write,
+          <b>Actions</b> read &amp; write. Set an expiration (30–90 days). Viewing the dashboard of a public repo needs no token.
+          <br>Anyone with this token can change your repo's code and run its workflows, so never share it.</div>
+      </div>
+      <button class="btn primary" id="gh-save">Save &amp; test</button>
+      <button class="btn" id="gh-forget">Forget token</button>
+    </div>
+
+    <form id="cfg-form">
+    <!-- 2. Account -->
+    <div class="card">
+      <div class="card-head"><h2>2 · Paper money</h2><span class="muted" id="acct-id"></span></div>
+      <div class="grid2">
+        <div class="field"><label for="starting_cash">Starting paper cash ($)</label>
+          <input type="number" id="starting_cash" data-path="account.starting_cash" min="100" step="100"></div>
+        <div class="field"><label for="position_size">Dollars per trade</label>
+          <input type="number" id="position_size" data-path="strategy.position_size" min="1" step="10"></div>
+        <div class="field"><label for="max_open_positions">Max open positions</label>
+          <input type="number" id="max_open_positions" data-path="strategy.max_open_positions" min="1" step="1"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="reset-account">
+        <span>Start a fresh live paper account when I save (uses the starting cash above; the old account's history stays in the files but is hidden).</span></label>
+    </div>
+
+    <!-- 3. Strategy -->
+    <div class="card">
+      <div class="card-head"><h2>3 · Strategy</h2><span class="muted">same rules as the live bot</span></div>
+      <div class="field"><label for="universe">Which stocks</label>
+        <select id="universe" data-path="strategy.universe">
+          <option value="market">Find them automatically (scan the market)</option>
+          <option value="watchlist">Only my watchlist</option>
+        </select>
+        <div class="hint">The scanner looks at ~500 large US stocks and ETFs. Each morning it picks the most “in play” ones using only
+          earlier days' data: liquid, volatile, and unusually active or moving the day before. During the day it also adds the
+          market's top gainers and most active stocks. Every pick and the reason for it shows on the dashboard.</div></div>
+      <div class="grid2" id="scan-fields">
+        <div class="field"><label for="scan_size">Stocks to watch per day</label>
+          <input type="number" id="scan_size" data-path="strategy.scan_size" min="5" max="150" step="5">
+          <div class="hint">With Alpaca keys (step 5) every liquid stock is watched instead.</div></div>
+        <div class="field"><label for="min_price">Minimum share price ($)</label>
+          <input type="number" id="min_price" data-path="strategy.min_price" min="1" step="1"></div>
+        <div class="field"><label for="min_adv">Minimum average daily trading ($ millions)</label>
+          <input type="number" id="min_adv" data-path="strategy.min_avg_dollar_volume" data-scale="1000000" min="1" step="5"></div>
+        <div class="field"><label for="max_change_pct">Don't chase moves bigger than (%, 0 = off)</label>
+          <input type="number" id="max_change_pct" data-path="strategy.max_change_pct" min="0" step="1"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="require_above_vwap" data-path="strategy.require_above_vwap">
+        <span>Only buy stocks holding above their volume-weighted average price for the day (VWAP), not ones fading</span></label>
+      <label class="check"><input type="checkbox" id="include_movers" data-path="strategy.include_market_movers">
+        <span>Also watch today's top gainers and most active stocks</span></label>
+      <div class="field"><label for="watchlist" id="watchlist-label">Always include (optional, comma-separated tickers)</label>
+        <input type="text" id="watchlist" data-path="strategy.watchlist" data-type="list"></div>
+      <div class="grid2">
+        <div class="field"><label for="min_change_pct">Trigger: move vs previous close (%)</label>
+          <input type="number" id="min_change_pct" data-path="strategy.min_change_pct" step="0.1"></div>
+        <div class="field"><label for="min_volume_multiplier">Trigger: volume vs 30-day average (×)</label>
+          <input type="number" id="min_volume_multiplier" data-path="strategy.min_volume_multiplier" step="0.1"></div>
+        <div class="field"><label for="volume_mode">Volume comparison</label>
+          <select id="volume_mode" data-path="strategy.volume_mode">
+            <option value="prorated">Time-of-day adjusted (recommended)</option>
+            <option value="full_day">Today so far vs full-day average (original bot)</option>
+          </select></div>
+        <div class="field"><label for="direction">Buy on</label>
+          <select id="direction" data-path="strategy.direction">
+            <option value="up">Up moves only</option><option value="both">Up and down moves</option>
+          </select></div>
+        <div class="field"><label for="entry_start">No buys before (ET)</label>
+          <input type="time" id="entry_start" data-path="strategy.entry_start"></div>
+        <div class="field"><label for="last_entry_time">No buys after (ET)</label>
+          <input type="time" id="last_entry_time" data-path="strategy.last_entry_time"></div>
+      </div>
+      <h3>Selling</h3>
+      <div class="grid2">
+        <div class="field"><label for="sell_mode">Limit-sell target</label>
+          <select id="sell_mode" data-path="strategy.sell_mode">
+            <option value="dollar">Fixed $ per share above entry</option>
+            <option value="percent">Fixed % above entry</option>
+            <option value="claude">Let Claude pick (needs Claude on)</option>
+          </select></div>
+        <div class="field"><label for="profit_target">$ per share</label>
+          <input type="number" id="profit_target" data-path="strategy.profit_target" step="0.1"></div>
+        <div class="field"><label for="sell_percent">% gain</label>
+          <input type="number" id="sell_percent" data-path="strategy.sell_percent" step="0.1"></div>
+        <div class="field"><label for="stop_loss_pct">Stop-loss % (0 = never sell at a loss)</label>
+          <input type="number" id="stop_loss_pct" data-path="strategy.stop_loss_pct" step="0.5" min="0"></div>
+        <div class="field"><label for="max_hold_days">Sell after N trading days (0 = never)</label>
+          <input type="number" id="max_hold_days" data-path="strategy.max_hold_days" step="1" min="0"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="close_at_eod" data-path="strategy.close_at_eod">
+        <span>Sell anything still open at the end of each day</span></label>
+      <label class="check"><input type="checkbox" id="one_entry" data-path="strategy.one_entry_per_ticker_per_day">
+        <span>Buy each ticker at most once per day</span></label>
+      <h3>Simulation realism</h3>
+      <div class="grid2">
+        <div class="field"><label for="slippage_bps">Slippage (basis points; 5 = 0.05%)</label>
+          <input type="number" id="slippage_bps" data-path="execution.slippage_bps" step="1" min="0"></div>
+        <div class="field"><label for="fee_per_trade">Fee per order ($)</label>
+          <input type="number" id="fee_per_trade" data-path="execution.fee_per_trade" step="0.01" min="0"></div>
+      </div>
+    </div>
+
+    <!-- 4. Claude -->
+    <div class="card">
+      <div class="card-head"><h2>4 · Claude review (optional)</h2><span id="claude-badge"></span></div>
+      <label class="check"><input type="checkbox" id="use_claude" data-path="strategy.use_claude">
+        <span>Ask Claude to approve each trigger (otherwise every trigger that fits the rules is bought)</span></label>
+      <div class="grid2">
+        <div class="field"><label for="claude_model">Model</label>
+          <input type="text" id="claude_model" data-path="strategy.claude_model"></div>
+        <div class="field"><label for="claude_max">Max Claude calls per run</label>
+          <input type="number" id="claude_max" data-path="strategy.claude_max_calls_per_run" min="1"></div>
+      </div>
+      <div class="field"><label for="strategy_text">Strategy description Claude reads</label>
+        <textarea id="strategy_text" data-path="strategy.strategy_text" rows="2"></textarea></div>
+      <div class="field"><label for="anthropic-key">Anthropic API key</label>
+        <div class="copy"><input type="password" id="anthropic-key" placeholder="sk-ant-… (saved as secret ANTHROPIC_API_KEY)" autocomplete="off">
+          <button class="btn" type="button" data-secret="ANTHROPIC_API_KEY" data-input="anthropic-key">Save key</button></div></div>
+    </div>
+
+    <!-- 5. Market data -->
+    <div class="card">
+      <div class="card-head"><h2>5 · Market data</h2></div>
+      <div class="grid2">
+        <div class="field"><label for="provider">Price source</label>
+          <select id="provider" data-path="market_data.provider">
+            <option value="yahoo">Yahoo Finance (no key)</option>
+            <option value="alpaca">Alpaca (free key, IEX feed)</option>
+          </select>
+          <div class="hint">If the main source fails, the other one is tried automatically (Alpaca only when keys are saved).</div></div>
+        <div class="field"><label for="interval">Bar size (minutes)</label>
+          <select id="interval" data-path="market_data.interval_minutes" data-type="number">
+            <option value="5">5</option><option value="15">15</option>
+          </select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="alpaca-id">Alpaca key ID (optional)</label>
+          <div class="copy"><input type="password" id="alpaca-id" autocomplete="off">
+            <button class="btn" type="button" data-secret="ALPACA_API_KEY_ID" data-input="alpaca-id">Save</button></div></div>
+        <div class="field"><label for="alpaca-secret">Alpaca secret key (optional)</label>
+          <div class="copy"><input type="password" id="alpaca-secret" autocomplete="off">
+            <button class="btn" type="button" data-secret="ALPACA_API_SECRET_KEY" data-input="alpaca-secret">Save</button></div></div>
+      </div>
+    </div>
+
+    <!-- 6. Storage -->
+    <div class="card">
+      <div class="card-head"><h2>6 · Where results are saved</h2><span id="storage-badge"></span></div>
+      <label class="check"><input type="radio" name="backend" value="github" data-path="storage.backend">
+        <span><b>GitHub</b> — CSV files on the <code>paper-data</code> branch of this repo. Works with no extra setup.</span></label>
+      <label class="check"><input type="radio" name="backend" value="drive" data-path="storage.backend">
+        <span><b>Google Drive</b> — CSV files in a “TradeBot Paper Trading” folder in your Drive.</span></label>
+
+      <div id="drive-setup" style="margin-top:12px">
+        <h3>Connect Google Drive (one time, ~5 minutes)</h3>
+        <ol class="steps">
+          <li>Open <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">Google Cloud Console</a> and create a project (any name).</li>
+          <li>Enable the <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener">Google Drive API</a> for it.</li>
+          <li>Under <a href="https://console.cloud.google.com/auth/branding" target="_blank" rel="noopener">Google Auth Platform</a>, set up the consent screen
+            (External), then under <b>Audience</b> add your Gmail address as a test user — or click <b>Publish app</b>.
+            <span class="muted">Test-mode tokens expire after 7 days; publishing avoids that. The app only asks for access to files it creates.</span></li>
+          <li>Under <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener">Clients</a> → Create client → <b>Web application</b>, add:
+            <div class="field" style="margin-top:6px"><label>Authorized JavaScript origin</label>
+              <div class="copy"><input type="text" id="origin" readonly><button class="btn" type="button" data-copy="origin">Copy</button></div></div>
+            <div class="field"><label>Authorized redirect URI</label>
+              <div class="copy"><input type="text" id="redirect" readonly><button class="btn" type="button" data-copy="redirect">Copy</button></div></div></li>
+          <li>Paste the client ID and secret here and click <b>Connect Google Drive</b>.</li>
+        </ol>
+        <div class="grid2">
+          <div class="field"><label for="g-client-id">OAuth client ID</label>
+            <input type="text" id="g-client-id" data-path="storage.google_client_id" placeholder="….apps.googleusercontent.com"></div>
+          <div class="field"><label for="g-client-secret">OAuth client secret</label>
+            <input type="password" id="g-client-secret" placeholder="GOCSPX-…" autocomplete="off"></div>
+        </div>
+        <div class="field"><label for="g-folder">Drive folder ID</label>
+          <input type="text" id="g-folder" data-path="storage.drive_folder_id" placeholder="created automatically when you connect">
+          <div class="hint" id="g-folder-link"></div></div>
+        <label class="check"><input type="checkbox" id="g-copy" checked>
+          <span>Copy existing results from the GitHub branch into Drive</span></label>
+        <button class="btn primary" type="button" id="g-connect">Connect Google Drive</button>
+        <button class="btn" type="button" id="g-test">Test Drive access</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="toolbar" style="margin:0">
+        <button class="btn primary" type="button" id="save-cfg">Save settings</button>
+        <span class="muted" id="save-note">Saving commits <code>paper_config.json</code> to the default branch. The next bot run uses it.</span>
+      </div>
+    </div>
+    </form>
+
+    <!-- 7. Run -->
+    <div class="card">
+      <div class="card-head"><h2>7 · Run now</h2></div>
+      <p class="muted" style="margin-top:0">A <b>backtest</b> replays real past market data through the bot with fresh paper cash, so you can see how it
+        would have done right away instead of waiting. The <b>live</b> paper account runs on its own every 15 minutes during market hours.</p>
+      <div class="toolbar">
+        <div class="field" style="margin:0;width:180px"><label for="bt-cash">Backtest starting cash</label>
+          <input type="number" id="bt-cash" min="100" step="100"></div>
+        <button class="btn primary" type="button" data-bt="1">Backtest last day</button>
+        <button class="btn primary" type="button" data-bt="2">Last 2 days</button>
+        <button class="btn primary" type="button" data-bt="5">Last week</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn" type="button" id="run-live">Run live check now</button>
+        <button class="btn" type="button" id="run-verify">Run verification</button>
+      </div>
+      <h3>Recent runs</h3>
+      <div id="runs"><p class="empty">Connect GitHub to see runs.</p></div>
+    </div>
+  </main>
+  <script type="module" src="assets/setup.js"></script>
+</body>
+</html>

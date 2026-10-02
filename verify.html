@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://accounts.google.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://www.googleapis.com https://oauth2.googleapis.com https://cdn.jsdelivr.net https://accounts.google.com; frame-src https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>TradeBot Paper Verify</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="toolbar">
+      <div>
+        <h1>Verify accuracy</h1>
+        <p class="subtitle" style="margin:0">Three independent ways to confirm the paper results are real and computed correctly.</p>
+      </div>
+      <div class="spacer"></div>
+      <select id="scope" style="width:auto;min-width:240px" aria-label="Which results to verify"></select>
+      <button class="btn" id="run-verify">Run verification now</button>
+    </div>
+    <div id="notices"></div>
+
+    <div class="card">
+      <div class="card-head"><h2>1 · Automated checks</h2><span id="overall"></span><div class="spacer"></div><span class="muted" id="gen"></span></div>
+      <p class="muted" style="margin-top:0">Run by the bot in GitHub Actions after every market close (and on demand). It re-walks the cash ledger,
+        recomputes every profit and loss, checks each fill against the 5-minute bar it filled in, compares fill prices to a
+        <b>second independent price source</b>, and re-runs the whole period from scratch to confirm it reproduces the same trades.</p>
+      <div id="checks"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>2 · Re-checked in your browser</h2><span id="js-overall"></span></div>
+      <p class="muted" style="margin-top:0">This page recomputes the numbers from the raw CSV files with separate code (JavaScript, not the bot's Python),
+        so a bug in the bot can't hide itself.</p>
+      <div id="js-checks"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>3 · Spot-check any trade yourself</h2></div>
+      <ol class="steps">
+        <li>Pick a row below and click <b>chart</b> — it opens the stock on Yahoo Finance. Switch to a <b>5-minute</b> chart for that date.</li>
+        <li>Find the bar at the listed time (Eastern). Its open / high / low / close should match the <b>Bar O/H/L/C</b> columns.</li>
+        <li><b>Buys</b> fill at the bar's open plus slippage (<span id="slip"></span>). <b>Limit sells</b> fill at the target only if the bar's high reached it.
+          <b>Stops</b> fill at the stop minus slippage when the low reached it.</li>
+        <li>The <b>Independent range</b> column is that day's low–high from a different data vendor; every fill must land inside it.</li>
+      </ol>
+      <div class="toolbar"><input type="text" id="filter" placeholder="Filter by ticker" style="width:160px"></div>
+      <div id="evidence"></div>
+    </div>
+  </main>
+  <script type="module" src="assets/verify.js"></script>
+</body>
+</html>
