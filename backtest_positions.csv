@@ -1,0 +1,3 @@
+account_id,run_id,trade_id,ticker,qty,entry_price,entry_ts,cost_basis,target,stop,mark_price,mark_ts,market_value,unrealized_pnl,unrealized_pct
+0,bt-20261002-082504,6,AMZN,3.980011,251.2556,2026-09-30T10:10:00-04:00,1000.0,253.2556,,248.32,2026-10-01T15:55:00-04:00,988.32,-11.68,-1.17
+0,bt-20261002-082504,2,NVDA,4.308003,232.1261,2026-09-28T09:35:00-04:00,1000.0,234.1261,,230.96,2026-10-01T15:55:00-04:00,994.98,-5.02,-0.5
