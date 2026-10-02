@@ -56,6 +56,7 @@ the dropdown to switch between the live account and any backtest.
 |---|---|
 | `fills.csv` | Every simulated buy and sell, with the 5-minute bar it filled in (O/H/L/C), the trigger values, cash after, data source |
 | `equity.csv` | Account value snapshot after every bar: cash, positions, realized/unrealized P&L |
+| `candidates.csv` | The stocks the scanner picked each day and why |
 | `signals.csv` | Every trigger and the decision (BUY / PASS / SKIP), by rules or Claude, with the reason |
 | `positions.csv` | Currently open positions, marked to the latest price |
 | `state.json` | The live account's cash and positions (what the next run continues from) |
@@ -66,6 +67,37 @@ the dropdown to switch between the live account and any backtest.
 
 Every row carries `account_id`. Starting a fresh account (Setup → *Start a
 fresh live paper account*) bumps the ID, so old rows are kept but hidden.
+
+## How it finds stocks (no watchlist needed)
+
+By default the bot **scans the market itself** (Setup → *Which stocks* →
+*Find them automatically*):
+
+1. **Universe**: about 500 large, liquid US stocks: the S&P 500 (refreshed
+   weekly from a public dataset) plus popular ETFs and high-volume names.
+2. **Daily picks**: before each session it ranks the universe using **only
+   earlier days' data**, so backtests can't cheat by knowing the future:
+   * liquid: share price ≥ $5 and ≥ $20M traded per day on average;
+   * in play: a wide average daily range (volatile enough to reach a profit
+     target), unusual volume, and/or a big move the previous day.
+
+   The top 40 (adjustable) are watched that day. With free Alpaca keys, every
+   liquid stock is watched instead, because Alpaca returns data for hundreds of
+   stocks per request.
+3. **Today's movers**: live runs also add the market's top gainers and most
+   active stocks (Yahoo / Alpaca screeners), filtered by the same liquidity rules.
+4. **Buying**: the same trigger as before (move vs previous close + unusual
+   volume), plus quality filters: price must be holding above the day's VWAP,
+   and no chasing moves bigger than 12%. When several stocks trigger at once,
+   the strongest (biggest move × relative volume) is bought first.
+
+The dashboard's **Stocks the bot picked** panel lists every pick per day, why it
+was picked, and what happened to it (bought, passed and why, or no trigger). The
+picks are saved in `candidates.csv` / `backtest_candidates.csv`, and the
+verification replay reuses them.
+
+You can still add tickers under *Always include*, or switch to *Only my
+watchlist*.
 
 ## How the simulation works
 

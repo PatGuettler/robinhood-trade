@@ -19,7 +19,7 @@ import traceback
 from datetime import date, datetime, time as dtime, timedelta
 
 from paper import config as config_mod
-from paper import marketdata, synthetic
+from paper import marketdata, scanner, synthetic
 from paper.claude import make_decider
 from paper.engine import EQUITY_COLS, FILL_COLS, POSITION_COLS, SIGNAL_COLS, Engine, new_state
 from paper.marketdata import ET
@@ -40,11 +40,46 @@ def _now(arg: str | None) -> datetime:
     return datetime.fromisoformat(arg).astimezone(ET) if arg else datetime.now(ET)
 
 
-def _fetch(cfg, symbols, start: date, end: date, use_synthetic: bool):
+def _fetch(cfg, symbols, start: date, end: date, use_synthetic: bool, daily=None):
     if use_synthetic:
         return synthetic.generate(symbols, start, end, interval_minutes=cfg["market_data"]["interval_minutes"])
+    if daily is not None:
+        daily = {s: daily.get(s, []) for s in symbols}
     return marketdata.fetch(symbols, start, end, provider=cfg["market_data"]["provider"],
-                            interval_minutes=cfg["market_data"]["interval_minutes"])
+                            interval_minutes=cfg["market_data"]["interval_minutes"], daily=daily)
+
+
+def _scan_mode(cfg) -> bool:
+    return cfg["strategy"].get("universe", "market") == "market"
+
+
+def _universe(use_synthetic: bool) -> list[str]:
+    return list(synthetic.UNIVERSE) if use_synthetic else scanner.load_universe()
+
+
+def _daily(cfg, symbols, start: date, end: date, use_synthetic: bool) -> dict:
+    if use_synthetic:
+        return synthetic.generate(symbols, start, end).daily
+    return scanner.daily_history(sorted(set(symbols)), start - timedelta(days=60), end, cfg["market_data"]["provider"])
+
+
+def _scan_all(use_synthetic: bool) -> bool:
+    # Alpaca returns bars for hundreds of symbols per request, so every liquid stock can be scanned.
+    return not use_synthetic and bool(marketdata.alpaca_keys())
+
+
+def _picks(cfg, day: date, daily: dict, use_synthetic: bool) -> list[dict]:
+    s = cfg["strategy"]
+    picks = scanner.pick_for_day(day, daily, s, scan_all=_scan_all(use_synthetic))
+    have = {p["ticker"] for p in picks}
+    picks += [{"ticker": t, "source": "watchlist", "score": "", "reason": "on your always-include list"}
+              for t in s["watchlist"] if t not in have]
+    return picks
+
+
+def _weekdays(start: date, end: date) -> list[date]:
+    return [start + timedelta(days=i) for i in range((end - start).days + 1)
+            if (start + timedelta(days=i)).weekday() < 5]
 
 
 def _decider(cfg):
@@ -75,9 +110,38 @@ def cmd_live(cfg, store, args) -> dict:
         if not reset_msg and start == now.date():
             return {"run_id": run_id, "status": "idle", "message": "market closed"}
 
-    symbols = sorted(set(cfg["strategy"]["watchlist"]) | set(state["positions"]))
-    md = _fetch(cfg, symbols, start, now.date(), args.synthetic)
-    eng = Engine(cfg, state, md, mode="live", run_id=run_id, decider=_decider(cfg))
+    allowed, daily, picked_msg = None, None, ""
+    if _scan_mode(cfg):
+        rows = [r for r in store.read_csv("candidates.csv") if r["mode"] == "live"]
+        by_day = scanner.allowed_by_day(rows)
+        days = _weekdays(start, now.date())
+        uni = sorted(set(_universe(args.synthetic)) | set(cfg["strategy"]["watchlist"]) | set(state["positions"]))
+        daily = _daily(cfg, uni, start, now.date(), args.synthetic)
+        new_rows = []
+        for d in days:
+            if d.isoformat() not in by_day:
+                new_rows += scanner.candidate_rows(_picks(cfg, d, daily, args.synthetic), d, run_id, "live")
+        today = now.date().isoformat()
+        if cfg["strategy"].get("include_market_movers", True) and not args.synthetic \
+                and now.weekday() < 5 and dtime(9, 35) <= now.time() <= dtime(16, 0):
+            have = by_day.get(today, set()) | {r["ticker"] for r in new_rows if r["date"] == today}
+            n_movers = sum(1 for r in rows if r["date"] == today and r["source"] == "mover")
+            movers = [(t, why) for t, why in scanner.market_movers() if t not in have][: max(0, 20 - n_movers)]
+            mdaily = _daily(cfg, [t for t, _ in movers], start, now.date(), False) if movers else {}
+            for t, why in movers:
+                m = scanner._metrics([d for d in mdaily.get(t, []) if d.day < now.date()])
+                if scanner.liquid(m, cfg["strategy"]):
+                    new_rows.append({"run_id": run_id, "mode": "live", "date": today, "ticker": t,
+                                     "source": "mover", "score": "", "reason": why})
+                    daily[t] = mdaily[t]
+        store.append_csv("candidates.csv", new_rows, scanner.CANDIDATE_COLS)
+        allowed = scanner.allowed_by_day(rows + new_rows)
+        symbols = sorted({t for d in days for t in allowed.get(d.isoformat(), ())} | set(state["positions"]))
+        picked_msg = f"watching {len(allowed.get(today, ()))} stocks today; "
+    else:
+        symbols = sorted(set(cfg["strategy"]["watchlist"]) | set(state["positions"]))
+    md = _fetch(cfg, symbols, start, now.date(), args.synthetic, daily=daily)
+    eng = Engine(cfg, state, md, mode="live", run_id=run_id, decider=_decider(cfg), allowed=allowed)
     n = eng.run(until=now)
 
     store.append_csv("fills.csv", eng.fills, FILL_COLS)
@@ -97,7 +161,8 @@ def cmd_live(cfg, store, args) -> dict:
     return {"run_id": run_id, "status": "ok", "bars_processed": n, "fills": len(eng.fills),
             "signals": len(eng.signals), "equity": round(eq, 2), "cash": round(state["cash"], 2),
             "data_source": md.source,
-            "message": reset_msg + (f"{len(md.errors)} data warnings: {md.errors[0][:120]}" if md.errors else "")}
+            "message": reset_msg + picked_msg
+            + (f"{len(md.errors)} data warnings: {md.errors[0][:120]}" if md.errors else "")}
 
 
 # ── backtest ──────────────────────────────────────────────────────────────────
@@ -107,10 +172,15 @@ def cmd_backtest(cfg, store, args) -> dict:
     days = max(1, int(args.days))
     cash = float(args.starting_cash or cfg["account"]["starting_cash"])
     bt_id = args.id or "bt-" + now.strftime("%Y%m%d-%H%M%S")
-    symbols = cfg["strategy"]["watchlist"]
-
-    md = _fetch(cfg, symbols, now.date() - timedelta(days=days * 2 + 7), now.date(), args.synthetic)
-    sessions = sorted({b.ts.date() for bars in md.intraday.values() for b in bars})
+    fetch_start = now.date() - timedelta(days=days * 2 + 7)
+    allowed, cand_rows = None, []
+    if _scan_mode(cfg):
+        uni = sorted(set(_universe(args.synthetic)) | set(cfg["strategy"]["watchlist"]))
+        daily = _daily(cfg, uni, fetch_start, now.date(), args.synthetic)
+        sessions = sorted({d.day for bars in daily.values() for d in bars if d.day >= fetch_start})
+    else:
+        md = _fetch(cfg, cfg["strategy"]["watchlist"], fetch_start, now.date(), args.synthetic)
+        sessions = sorted({b.ts.date() for bars in md.intraday.values() for b in bars})
     # Today only counts once the session is over, so "1 day" means the last full day.
     if sessions and sessions[-1] == now.date() and now.time() < dtime(16, 0):
         sessions = sessions[:-1]
@@ -118,11 +188,21 @@ def cmd_backtest(cfg, store, args) -> dict:
     if not chosen:
         raise RuntimeError("No completed trading sessions found in market data")
     first, last = chosen[0], chosen[-1]
+    if _scan_mode(cfg):
+        for d in chosen:
+            cand_rows += scanner.candidate_rows(_picks(cfg, d, daily, args.synthetic), d, bt_id, "backtest")
+        allowed = scanner.allowed_by_day(cand_rows)
+        symbols = sorted({r["ticker"] for r in cand_rows})
+        md = (synthetic.generate(symbols, fetch_start, now.date()) if args.synthetic
+              else _fetch(cfg, symbols, first, last, False, daily=daily))
+    else:
+        symbols = cfg["strategy"]["watchlist"]
     md.intraday = {s: [b for b in bars if first <= b.ts.date() <= last] for s, bars in md.intraday.items()}
 
     state = new_state(0, cash, start_ts=datetime.combine(first, dtime(9, 30), ET))
-    eng = Engine(cfg, state, md, mode="backtest", run_id=bt_id, decider=_decider(cfg))
+    eng = Engine(cfg, state, md, mode="backtest", run_id=bt_id, decider=_decider(cfg), allowed=allowed)
     n = eng.run()
+    store.append_csv("backtest_candidates.csv", cand_rows, scanner.CANDIDATE_COLS)
 
     store.append_csv("backtest_fills.csv", eng.fills, FILL_COLS)
     store.append_csv("backtest_signals.csv", eng.signals, SIGNAL_COLS)
@@ -132,7 +212,8 @@ def cmd_backtest(cfg, store, args) -> dict:
     row = {k: sm.get(k, "") for k in BACKTEST_COLS}
     row.update(backtest_id=bt_id, created_at=now.isoformat(), days=len(chosen), start_date=first.isoformat(),
                end_date=last.isoformat(), data_source=md.source, strategy_hash=eng.hash,
-               watchlist=" ".join(symbols), config_json=json.dumps(cfg["strategy"], sort_keys=True))
+               watchlist=(f"market scan ({len(symbols)} stocks)" if _scan_mode(cfg) else " ".join(symbols)),
+               config_json=json.dumps(cfg["strategy"], sort_keys=True))
     store.append_csv("backtests.csv", [row], BACKTEST_COLS)
     return {"run_id": bt_id, "status": "ok", "bars_processed": n, "fills": len(eng.fills),
             "signals": len(eng.signals), "equity": sm["ending_equity"], "cash": sm["cash"],

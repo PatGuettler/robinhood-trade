@@ -6,6 +6,7 @@ import {
 nav("index.html");
 
 const FILES = ["state.json", "fills.csv", "equity.csv", "signals.csv", "positions.csv", "runs.csv",
+  "candidates.csv", "backtest_candidates.csv",
   "backtests.csv", "backtest_fills.csv", "backtest_equity.csv", "backtest_signals.csv", "backtest_positions.csv"];
 
 let cfg, raw, range = 0;
@@ -47,12 +48,12 @@ function scopeData() {
     const mine = (rows) => rows.filter(r => String(r.account_id) === acct);
     const starting = raw.state && String(raw.state.account_id) === acct ? raw.state.starting_cash : num(cfg.account.starting_cash);
     return { id, live: true, starting, fills: mine(raw.fills), equity: mine(raw.equity), signals: mine(raw.signals),
-             positions: mine(raw.positions) };
+             positions: mine(raw.positions), candidates: raw.candidates.filter(c => c.mode === "live") };
   }
   const bt = raw.backtests.find(b => b.backtest_id === id);
   const f = (rows) => rows.filter(r => r.run_id === id);
   return { id, live: false, bt, starting: num(bt.starting_cash), fills: f(raw.backtest_fills), equity: f(raw.backtest_equity),
-           signals: f(raw.backtest_signals), positions: f(raw.backtest_positions) };
+           signals: f(raw.backtest_signals), positions: f(raw.backtest_positions), candidates: f(raw.backtest_candidates) };
 }
 
 function sessions(equity) { return [...new Set(equity.map(e => etDate(e.timestamp)))].sort(); }
@@ -118,6 +119,7 @@ function render() {
     { label: "Stocks bought", html: r => esc(r.tickers.join(", ") || "—") },
   ], rows, d.live ? "No trading sessions processed yet. The bot runs every 15 minutes during market hours." : "This backtest has no bars.");
 
+  renderPicks(d, true);
   renderEquity(d);
   const days = sessions(d.equity);
   let prev = d.starting;
@@ -196,6 +198,36 @@ function notices(d) {
   $("notices").innerHTML = out.join("");
 }
 
+const SOURCE = { scan: ["gray", "scanner"], mover: ["yellow", "today's mover"], watchlist: ["green", "your list"] };
+
+function renderPicks(d, resetDay) {
+  const days = [...new Set(d.candidates.map(c => c.date))].sort().reverse();
+  const sel = $("pick-day");
+  if (resetDay || !days.includes(sel.value)) {
+    sel.innerHTML = days.map(x => `<option value="${esc(x)}">${esc(new Date(x + "T12:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }))}</option>`).join("");
+  }
+  sel.style.display = days.length ? "" : "none";
+  const day = sel.value;
+  const rows = d.candidates.filter(c => c.date === day);
+  const sig = {}, bought = new Set();
+  d.signals.filter(x => x.timestamp.slice(0, 10) === day).forEach(x => { sig[x.ticker] = x; });
+  d.fills.filter(f => f.side === "BUY" && f.timestamp.slice(0, 10) === day).forEach(f => bought.add(f.ticker));
+  const counts = rows.reduce((a, r) => (a[r.source] = (a[r.source] || 0) + 1, a), {});
+  $("picks-note").textContent = rows.length
+    ? `${rows.length} watched · ${counts.scan || 0} from the scan, ${counts.mover || 0} movers, ${counts.watchlist || 0} yours · ${bought.size} bought`
+    : "";
+  const order = (r) => (bought.has(r.ticker) ? 0 : sig[r.ticker] ? 1 : 2);
+  $("picks").innerHTML = table([
+    { label: "Ticker", html: r => `<a class="ticker" href="${chartUrl(r.ticker)}" target="_blank" rel="noopener">${esc(r.ticker)}</a>` },
+    { label: "Found by", html: r => { const [c, l] = SOURCE[r.source] || ["gray", r.source]; return `<span class="badge ${c}">${esc(l)}</span>`; } },
+    { label: "Why it was picked", cls: () => "wrap", get: r => r.reason },
+    { label: "What happened", html: r => bought.has(r.ticker) ? `<span class="pos">bought</span>`
+        : sig[r.ticker] ? `<span class="muted">triggered · ${esc(sig[r.ticker].decision.toLowerCase())}: ${esc(sig[r.ticker].reason)}</span>`
+        : `<span class="muted">no trigger</span>` },
+  ], [...rows].sort((a, b) => order(a) - order(b) || num(b.score || 0) - num(a.score || 0)),
+  "The bot picks stocks on its first run each trading day. Using your own watchlist? Picks only appear when it scans the market.");
+}
+
 function renderEquity(d) {
   const days = sessions(d.equity);
   const keep = range ? new Set(days.slice(-range)) : null;
@@ -227,6 +259,7 @@ function renderTrades(d, trips) {
 }
 
 $("scope").addEventListener("change", render);
+$("pick-day").addEventListener("change", () => renderPicks(scopeData(), false));
 $("refresh").addEventListener("click", load);
 $("filter").addEventListener("input", () => { const d = scopeData(); renderTrades(d, roundtrips(d.fills)); });
 $("range").addEventListener("click", (e) => {

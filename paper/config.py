@@ -23,7 +23,16 @@ DEFAULTS: dict = {
         "starting_cash": 10000.0,
     },
     "strategy": {
-        "watchlist": ["AAPL", "NVDA", "TSLA", "AMD", "MSFT", "AMZN", "META", "SPY", "QQQ"],
+        # market    = the scanner picks stocks every day (watchlist = always include)
+        # watchlist = only trade the tickers listed below
+        "universe": "market",
+        "scan_size": 40,                  # stocks watched per day (all liquid ones with Alpaca keys)
+        "include_market_movers": True,    # live: also watch today's top gainers / most active
+        "min_price": 5.0,                 # skip penny stocks
+        "min_avg_dollar_volume": 20_000_000,
+        "max_change_pct": 12.0,           # don't chase stocks already up more than this (0 = off)
+        "require_above_vwap": True,       # only buy strength that is holding above VWAP
+        "watchlist": [],
         "position_size": 1000.0,          # $ per trade
         "max_open_positions": 5,
         "min_change_pct": 1.5,            # % move vs previous close
@@ -77,7 +86,7 @@ def normalize(cfg: dict) -> dict:
         wl = wl.split(",")
     cfg["strategy"]["watchlist"] = sorted({t.strip().upper() for t in wl if t.strip()})
     for k in ("position_size", "min_change_pct", "min_volume_multiplier", "profit_target",
-              "sell_percent", "stop_loss_pct"):
+              "sell_percent", "stop_loss_pct", "min_price", "min_avg_dollar_volume", "max_change_pct"):
         cfg["strategy"][k] = float(cfg["strategy"][k])
     cfg["account"]["starting_cash"] = float(cfg["account"]["starting_cash"])
     cfg["account"]["id"] = int(cfg["account"]["id"])

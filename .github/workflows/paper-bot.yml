@@ -43,6 +43,7 @@ jobs:
       BACKTEST_DAYS: ${{ inputs.days }}
       BACKTEST_CASH: ${{ inputs.starting_cash }}
       PAPER_DATA_DIR: .paper-data
+      PAPER_CACHE_DIR: .cache
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +54,13 @@ jobs:
           cache-dependency-path: requirements-paper.txt
 
       - run: pip install -r requirements-paper.txt
+
+      # Stock list + daily price history for the market scanner (downloaded once a day).
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: paper-cache-${{ github.run_id }}
+          restore-keys: paper-cache-
 
       - name: Choose command
         id: cmd
@@ -93,7 +101,8 @@ jobs:
           python -m paper "${{ steps.cmd.outputs.command }}" | tee result.json
 
       - name: Save data to paper-data branch
-        if: always() && steps.cmd.outputs.backend != 'drive'
+        # Runs started from other branches are test runs: their results are not saved.
+        if: always() && steps.cmd.outputs.backend != 'drive' && github.ref == 'refs/heads/main'
         run: |
           cd .paper-data
           git add -A

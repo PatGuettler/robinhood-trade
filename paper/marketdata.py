@@ -190,12 +190,16 @@ def stooq_daily(symbol: str) -> list[DailyBar]:
 # ── Unified fetch ─────────────────────────────────────────────────────────────
 
 def fetch(symbols: list[str], start: date, end: date, provider: str = "yahoo",
-          interval_minutes: int = 5, daily_lookback_days: int = 60) -> MarketData:
+          interval_minutes: int = 5, daily_lookback_days: int = 60,
+          daily: dict[str, list[DailyBar]] | None = None) -> MarketData:
     """
     Fetch intraday bars for [start, end] (ET dates, inclusive) and daily bars
     going back `daily_lookback_days` calendar days before `start` (for the
-    previous close and 30-day average volume).
+    previous close and 30-day average volume). Pass `daily` to reuse daily bars
+    already downloaded (e.g. by the scanner).
     """
+    from concurrent.futures import ThreadPoolExecutor
+
     md = MarketData(interval_minutes=interval_minutes)
     s_dt = datetime.combine(start, dtime(0, 0), ET)
     e_dt = datetime.combine(end + timedelta(days=1), dtime(0, 0), ET)
@@ -207,20 +211,31 @@ def fetch(symbols: list[str], start: date, end: date, provider: str = "yahoo",
             continue
         try:
             if prov == "alpaca":
-                md.intraday = alpaca_intraday(symbols, s_dt, e_dt, interval_minutes)
-                md.daily = alpaca_daily(symbols, d_start, end)
+                md.intraday = {}
+                for i in range(0, len(symbols), 200):
+                    md.intraday.update(alpaca_intraday(symbols[i:i + 200], s_dt, e_dt, interval_minutes))
+                md.daily = daily if daily is not None else alpaca_daily(symbols, d_start, end)
             else:
-                md.intraday, md.daily = {}, {}
-                for sym in symbols:
+                errors: list[str] = []
+
+                def one(sym):
                     try:
-                        md.intraday[sym] = yahoo_intraday(sym, s_dt, e_dt, interval_minutes)
-                        md.daily[sym] = yahoo_daily(sym, d_start, end)
+                        bars = yahoo_intraday(sym, s_dt, e_dt, interval_minutes)
+                        d = daily.get(sym, []) if daily is not None else yahoo_daily(sym, d_start, end)
+                        return sym, bars, d
                     except Exception as e:  # noqa: BLE001 — one bad ticker shouldn't kill the run
-                        md.errors.append(str(e))
-                if not any(md.intraday.values()) and md.errors:
-                    raise RuntimeError("; ".join(md.errors[:3]))
+                        errors.append(str(e))
+                        return sym, [], []
+
+                with ThreadPoolExecutor(max_workers=8) as ex:
+                    res = list(ex.map(one, symbols))
+                md.intraday = {s: b for s, b, _ in res if b}
+                md.daily = {s: d for s, _, d in res if d}
+                md.errors.extend(errors)
+                if not md.intraday and errors:
+                    raise RuntimeError("; ".join(errors[:3]))
             md.source = prov
             return md
         except Exception as e:  # noqa: BLE001
             md.errors.append(f"{prov}: {e}")
-    raise RuntimeError("All market data providers failed: " + " | ".join(md.errors))
+    raise RuntimeError("All market data providers failed: " + " | ".join(md.errors[-3:]))

@@ -142,7 +142,30 @@ class DriveStorage(Storage):
         self._cache[filename] = text
 
 
+class ReadOnlyOverlay(Storage):
+    """Reads from `base`, keeps writes in memory. Used for test runs off the main branch."""
+    name = "read-only"
+
+    def __init__(self, base: Storage):
+        self.base, self.written = base, {}
+
+    def read_text(self, filename):
+        return self.written[filename] if filename in self.written else self.base.read_text(filename)
+
+    def write_text(self, filename, text, mime="text/csv"):
+        self.written[filename] = text
+
+
 def from_config(cfg: dict) -> Storage:
+    store = _from_config(cfg)
+    ref = os.environ.get("GITHUB_REF", "")
+    if os.environ.get("GITHUB_ACTIONS") == "true" and ref and ref != "refs/heads/main":
+        print(f"Test run from {ref}: results are not saved", flush=True)
+        return ReadOnlyOverlay(store)
+    return store
+
+
+def _from_config(cfg: dict) -> Storage:
     st = cfg["storage"]
     if st.get("backend") == "drive":
         return DriveStorage(

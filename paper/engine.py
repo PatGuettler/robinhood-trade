@@ -48,7 +48,7 @@ EQUITY_COLS = [
 ]
 SIGNAL_COLS = [
     "account_id", "run_id", "mode", "timestamp", "ticker", "price", "prev_close",
-    "change_pct", "vol_ratio", "decision", "decided_by", "confidence", "reason", "target_price",
+    "change_pct", "vol_ratio", "decision", "decided_by", "confidence", "reason", "target_price", "score",
 ]
 POSITION_COLS = [
     "account_id", "run_id", "trade_id", "ticker", "qty", "entry_price", "entry_ts", "cost_basis",
@@ -87,7 +87,7 @@ def _hhmm(s: str) -> dtime:
 
 class Engine:
     def __init__(self, cfg: dict, state: dict, md: MarketData, *, mode: str, run_id: str,
-                 decider: Decider | None = None):
+                 decider: Decider | None = None, allowed: dict[str, set[str]] | None = None):
         self.cfg = cfg
         self.s = cfg["strategy"]
         self.x = cfg["execution"]
@@ -96,6 +96,8 @@ class Engine:
         self.mode = mode
         self.run_id = run_id
         self.decider = decider
+        # day (YYYY-MM-DD) -> tickers the scanner picked for that day. None = any ticker with bars.
+        self.allowed = allowed
         self.interval = timedelta(minutes=md.interval_minutes)
         self.hash = strategy_hash(cfg)
         self.fills: list[dict] = []
@@ -124,14 +126,16 @@ class Engine:
         return ctx
 
     def _cumulative_volume(self) -> dict:
+        """(ticker, bar ts) -> (volume so far today, session VWAP so far)."""
         out = {}
         for sym, bars in self.md.intraday.items():
-            run, day = 0.0, None
+            vol, pv, day = 0.0, 0.0, None
             for b in sorted(bars, key=lambda b: b.ts):
                 if b.ts.date() != day:
-                    run, day = 0.0, b.ts.date()
-                run += b.volume
-                out[(sym, b.ts)] = run
+                    vol, pv, day = 0.0, 0.0, b.ts.date()
+                vol += b.volume
+                pv += (b.high + b.low + b.close) / 3 * b.volume
+                out[(sym, b.ts)] = (vol, pv / vol if vol else b.close)
         return out
 
     # ── Helpers ──────────────────────────────────────────────────────────────
@@ -199,7 +203,7 @@ class Engine:
             "prev_close": _r(sig["prev_close"]), "change_pct": _r(sig["change_pct"], 2),
             "vol_ratio": _r(sig["vol_ratio"], 2), "decision": decision, "decided_by": by,
             "confidence": confidence, "reason": reason[:300],
-            "target_price": _r(target) if target else "",
+            "target_price": _r(target) if target else "", "score": _r(sig.get("score", 0), 2),
         })
 
     # ── Per-bar steps ────────────────────────────────────────────────────────
@@ -269,25 +273,36 @@ class Engine:
         c = self._ctx.get((sym, bar.ts.date()))
         if not c or not c["prev_close"]:
             return None
+        s = self.s
+        if bar.close < float(s.get("min_price", 0) or 0):
+            return None
+        if c["avg_volume"] * c["prev_close"] < float(s.get("min_avg_dollar_volume", 0) or 0):
+            return None
         end = bar.ts + self.interval
         change = (bar.close - c["prev_close"]) / c["prev_close"] * 100
-        cum = self._cumvol.get((sym, bar.ts), 0.0)
+        cum, vwap = self._cumvol.get((sym, bar.ts), (0.0, bar.close))
         avg = c["avg_volume"]
         if avg > 0:
-            if self.s.get("volume_mode") == "full_day":
+            if s.get("volume_mode") == "full_day":
                 expected = avg
             else:
                 opened = datetime.combine(bar.ts.date(), dtime(9, 30), ET)
                 elapsed = max((end - opened).total_seconds() / 60, 1)
                 expected = avg * min(elapsed / SESSION_MINUTES, 1.0)
             ratio = cum / expected
-            vol_ok = ratio >= self.s["min_volume_multiplier"]
+            vol_ok = ratio >= s["min_volume_multiplier"]
         else:
             ratio, vol_ok = 0.0, True
-        if abs(change) < self.s["min_change_pct"] or not vol_ok:
+        if abs(change) < s["min_change_pct"] or not vol_ok:
             return None
+        cap = float(s.get("max_change_pct", 0) or 0)
+        if cap and abs(change) > cap:
+            return None          # already ran too far — don't chase
+        if s.get("require_above_vwap") and change > 0 and bar.close < vwap:
+            return None          # up on the day but fading below VWAP
         return {"change_pct": change, "vol_ratio": ratio, "prev_close": c["prev_close"],
-                "avg_volume": avg, "volume": cum}
+                "avg_volume": avg, "volume": cum, "vwap": vwap,
+                "score": abs(change) * min(ratio, 10.0)}
 
     def _throttled(self, sym: str, bar: Bar, minutes: int = 30) -> bool:
         last = self.state["last_signal"].get(sym)
@@ -296,19 +311,24 @@ class Engine:
         self.state["last_signal"][sym] = bar.ts.isoformat()
         return False
 
-    def _evaluate(self, sym: str, bar: Bar):
+    def _candidate(self, sym: str, bar: Bar) -> dict | None:
+        """The trigger signal for this bar, if the ticker may be bought right now."""
         st = self.state
         end_t = (bar.ts + self.interval).time()
         if end_t < _hhmm(self.s["entry_start"]) or end_t > _hhmm(self.s["last_entry_time"]):
-            return
+            return None
         if sym in st["positions"] or sym in st["pending"]:
-            return
+            return None
         today = bar.ts.date().isoformat()
+        if self.allowed is not None and sym not in self.allowed.get(today, ()):
+            return None
         if self.s.get("one_entry_per_ticker_per_day", True) and st["entered_on"].get(sym) == today:
-            return
-        sig = self._signal(sym, bar)
-        if not sig:
-            return
+            return None
+        return self._signal(sym, bar)
+
+    def _decide(self, sym: str, bar: Bar, sig: dict):
+        st = self.state
+        today = bar.ts.date().isoformat()
 
         if len(st["positions"]) + len(st["pending"]) >= int(self.s["max_open_positions"]):
             if not self._throttled(sym, bar):
@@ -380,13 +400,19 @@ class Engine:
 
         processed = 0
         for ts in sorted(by_ts):
+            cands = []
             for sym, bar in sorted(by_ts[ts], key=lambda x: x[0]):
                 self._fill_entry(sym, bar)
                 just_opened = st["positions"].get(sym, {}).get("entry_ts") == bar.ts.isoformat()
                 self._check_exits(sym, bar, just_opened=just_opened)
                 st["marks"][sym] = {"price": bar.close, "ts": bar.ts.isoformat()}
-                self._evaluate(sym, bar)
+                sig = self._candidate(sym, bar)
+                if sig:
+                    cands.append((sig, sym, bar))
                 processed += 1
+            # Several stocks can trigger on the same bar: take the strongest first.
+            for sig, sym, bar in sorted(cands, key=lambda c: (-c[0]["score"], c[1])):
+                self._decide(sym, bar, sig)
             st["last_bar_ts"] = ts.isoformat()
             self._snapshot(ts)
         st["cash"] = _r(st["cash"], 6)

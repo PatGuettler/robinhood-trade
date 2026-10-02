@@ -15,9 +15,11 @@ DAY = date(2026, 9, 29)
 
 
 def cfg(**strategy):
-    c = config_mod.normalize({"strategy": {"watchlist": ["TEST"], "position_size": 1000,
-                                           "min_change_pct": 1.5, "min_volume_multiplier": 1.0,
-                                           **strategy},
+    base = {"watchlist": ["TEST"], "position_size": 1000, "min_change_pct": 1.5,
+            "min_volume_multiplier": 1.0,
+            # fill-rule tests use a small made-up stock; scanner filters get their own tests
+            "min_avg_dollar_volume": 0, "max_change_pct": 0, "require_above_vwap": False}
+    c = config_mod.normalize({"strategy": {**base, **strategy},
                               "execution": {"slippage_bps": 10}})
     return c
 
@@ -208,3 +210,71 @@ def test_local_storage_csv_roundtrip(tmp_path):
     s.append_csv("a.csv", [{"x": 1, "y": 2}], ["x", "y"])
     s.append_csv("a.csv", [{"x": 3, "y": 4}], ["x", "y"])
     assert s.read_csv("a.csv") == [{"x": "1", "y": "2"}, {"x": "3", "y": "4"}]
+
+
+# ── Scanner filters, ranking and daily picks ─────────────────────────────────
+
+def test_liquidity_filter_skips_thin_stocks():
+    bars = [bar(9, 30, 100, 102, 100, 101.8), bar(9, 35, 102, 102.1, 101.9, 102)]
+    eng, _ = run(cfg(min_avg_dollar_volume=20e6), bars)      # 78k shares x $100 = $7.8M/day
+    assert not eng.fills and not eng.signals
+
+
+def test_max_change_cap_skips_overextended():
+    bars = [bar(9, 30, 100, 116, 100, 115), bar(9, 35, 115, 116, 114, 115.5)]
+    eng, _ = run(cfg(max_change_pct=12), bars)
+    assert not eng.fills
+
+
+def test_vwap_filter_skips_fading_stock():
+    # spikes to 106 on heavy volume (out of the entry window), then fades to 102 (+2%) below VWAP
+    bars = [bar(9, 30, 100, 106, 100, 105.5, v=20000), bar(9, 35, 105.5, 105.6, 101.9, 102.0, v=2000),
+            bar(9, 40, 102, 102.2, 101.8, 102.1)]
+    late = dict(entry_start="09:40")         # only the faded 9:35 bar can trigger
+    off, _ = run(cfg(require_above_vwap=False, **late), bars)
+    on, _ = run(cfg(require_above_vwap=True, **late), bars)
+    assert [f["side"] for f in off.fills] == ["BUY"]
+    assert not on.fills and not on.signals
+
+
+def _two_stock_market(strong, weak):
+    daily = {s: [DailyBar(DAY - timedelta(days=i), 100, 100, 100, 100, 78_000) for i in range(30, 0, -1)]
+             for s in (strong, weak)}
+    intraday = {
+        strong: [bar(9, 30, 100, 104, 100, 103.5, v=8000), bar(9, 35, 103.5, 103.6, 103.4, 103.5)],
+        weak: [bar(9, 30, 100, 102, 100, 101.6, v=3000), bar(9, 35, 101.6, 101.7, 101.5, 101.6)],
+    }
+    return MarketData(intraday=intraday, daily=daily, source="unit", interval_minutes=5)
+
+
+def test_strongest_signal_is_bought_first_when_slots_are_limited():
+    st = new_state(1, 10_000, start_ts=t(9, 30))
+    eng = Engine(cfg(max_open_positions=1), st, _two_stock_market("ZZZ", "AAA"), mode="backtest", run_id="t")
+    eng.run()
+    buys = [f["ticker"] for f in eng.fills if f["side"] == "BUY"]
+    assert buys == ["ZZZ"]                                    # not alphabetical "AAA"
+    assert [s["decision"] for s in eng.signals if s["ticker"] == "AAA"] == ["SKIP"]
+
+
+def test_allowed_restricts_entries_to_the_days_picks():
+    st = new_state(1, 10_000, start_ts=t(9, 30))
+    eng = Engine(cfg(), st, _two_stock_market("ZZZ", "AAA"), mode="backtest", run_id="t",
+                 allowed={DAY.isoformat(): {"AAA"}})
+    eng.run()
+    assert {f["ticker"] for f in eng.fills if f["side"] == "BUY"} == {"AAA"}
+
+
+def test_scanner_picks_use_only_prior_days():
+    from paper.scanner import pick_for_day
+    flat = lambda i: DailyBar(DAY - timedelta(days=i), 50, 50.5, 49.5, 50, 1_000_000)
+    hot = [flat(i) for i in range(40, 1, -1)] + [DailyBar(DAY - timedelta(days=1), 50, 56, 50, 55, 5_000_000)]
+    quiet = [flat(i) for i in range(40, 0, -1)]
+    future_spike = quiet + [DailyBar(DAY, 50, 70, 50, 69, 9_000_000)]       # happens ON the day — must be ignored
+    daily = {"HOT": hot, "QUIET": quiet, "FUTURE": future_spike, "PENNY": [
+        DailyBar(DAY - timedelta(days=i), 2, 2.5, 1.5, 2, 50_000_000) for i in range(40, 0, -1)]}
+    picks = pick_for_day(DAY, daily, {"scan_size": 2, "min_price": 5, "min_avg_dollar_volume": 20e6})
+    names = [p["ticker"] for p in picks]
+    assert names[0] == "HOT" and "PENNY" not in names and len(names) == 2
+    scores = {p["ticker"]: p["score"] for p in picks}
+    assert scores.get("FUTURE", scores.get("QUIET")) == pick_for_day(
+        DAY, {"QUIET": quiet}, {"scan_size": 2, "min_price": 5, "min_avg_dollar_volume": 20e6})[0]["score"]
