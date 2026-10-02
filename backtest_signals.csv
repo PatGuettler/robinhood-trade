@@ -1,18 +1,456 @@
-account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,decision,decided_by,confidence,reason,target_price
-0,bt-20261002-082504,backtest,2026-09-25T09:30:00-04:00,META,754.83,777.59,-2.93,9.24,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-25T09:30:00-04:00,MSFT,508.89,497.93,2.2,7.82,BUY,rules,,trigger met,
-0,bt-20261002-082504,backtest,2026-09-25T10:00:00-04:00,TSLA,371.05,377.94,-1.82,4.06,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,META,726.5837,751.66,-3.34,13.73,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,MSFT,505.2,516.17,-2.13,6.99,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,NVDA,232.03,225.07,3.09,13.56,BUY,rules,,trigger met,
-0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,TSLA,366.36,372.11,-1.55,4.58,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T09:35:00-04:00,AMD,618.72,630.63,-1.89,4.1,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T09:35:00-04:00,AMZN,245.2853,249.67,-1.76,3.43,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-28T10:45:00-04:00,QQQ,732.33,744.5,-1.63,1.61,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-29T09:40:00-04:00,AAPL,332.5251,338.4,-1.74,2.21,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-29T09:50:00-04:00,AMD,621.3955,607.87,2.23,2.51,BUY,rules,,trigger met,
-0,bt-20261002-082504,backtest,2026-09-30T09:30:00-04:00,META,723.472,738.79,-2.07,5.55,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-30T09:30:00-04:00,TSLA,347.225,352.84,-1.59,6.71,PASS,rules,,down move — strategy only buys strength,
-0,bt-20261002-082504,backtest,2026-09-30T09:50:00-04:00,AAPL,334.81,329.4,1.64,1.55,BUY,rules,,trigger met,
-0,bt-20261002-082504,backtest,2026-09-30T09:55:00-04:00,MSFT,516.75,508.96,1.53,1.72,BUY,rules,,trigger met,
-0,bt-20261002-082504,backtest,2026-09-30T10:05:00-04:00,AMZN,251.13,246.67,1.81,1.79,BUY,rules,,trigger met,
+account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,decision,decided_by,confidence,reason,target_price,score
+0,bt-20261002-082504,backtest,2026-09-25T09:30:00-04:00,META,754.83,777.59,-2.93,9.24,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-25T09:30:00-04:00,MSFT,508.89,497.93,2.2,7.82,BUY,rules,,trigger met,,
+0,bt-20261002-082504,backtest,2026-09-25T10:00:00-04:00,TSLA,371.05,377.94,-1.82,4.06,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,META,726.5837,751.66,-3.34,13.73,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,MSFT,505.2,516.17,-2.13,6.99,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,NVDA,232.03,225.07,3.09,13.56,BUY,rules,,trigger met,,
+0,bt-20261002-082504,backtest,2026-09-28T09:30:00-04:00,TSLA,366.36,372.11,-1.55,4.58,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T09:35:00-04:00,AMD,618.72,630.63,-1.89,4.1,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T09:35:00-04:00,AMZN,245.2853,249.67,-1.76,3.43,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-28T10:45:00-04:00,QQQ,732.33,744.5,-1.63,1.61,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-29T09:40:00-04:00,AAPL,332.5251,338.4,-1.74,2.21,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-29T09:50:00-04:00,AMD,621.3955,607.87,2.23,2.51,BUY,rules,,trigger met,,
+0,bt-20261002-082504,backtest,2026-09-30T09:30:00-04:00,META,723.472,738.79,-2.07,5.55,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-30T09:30:00-04:00,TSLA,347.225,352.84,-1.59,6.71,PASS,rules,,down move — strategy only buys strength,,
+0,bt-20261002-082504,backtest,2026-09-30T09:50:00-04:00,AAPL,334.81,329.4,1.64,1.55,BUY,rules,,trigger met,,
+0,bt-20261002-082504,backtest,2026-09-30T09:55:00-04:00,MSFT,516.75,508.96,1.53,1.72,BUY,rules,,trigger met,,
+0,bt-20261002-082504,backtest,2026-09-30T10:05:00-04:00,AMZN,251.13,246.67,1.81,1.79,BUY,rules,,trigger met,,
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,ARM,320.96,306.34,4.77,17.93,BUY,rules,,trigger met,,47.72
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,UNG,11.085,11.55,-4.03,11.43,PASS,rules,,down move — strategy only buys strength,,40.26
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,META,754.83,777.59,-2.93,9.24,PASS,rules,,down move — strategy only buys strength,,27.05
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,FSLR,176.65,172.16,2.61,9.73,BUY,rules,,trigger met,,25.38
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,BE,275.425,266.65,3.29,6.12,BUY,rules,,trigger met,,20.15
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,SNDK,1799.51,1753.62,2.62,5.38,BUY,rules,,trigger met,,14.07
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,MARA,12.625,12.92,-2.28,4.14,PASS,rules,,down move — strategy only buys strength,,9.46
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,CLSK,13.93,14.26,-2.31,3.54,PASS,rules,,down move — strategy only buys strength,,8.2
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,GEN,22.6925,23.07,-1.64,4.68,PASS,rules,,down move — strategy only buys strength,,7.65
+0,bt-20261002-095549,backtest,2026-09-25T09:30:00-04:00,GDDY,98.875,100.81,-1.92,3.59,PASS,rules,,down move — strategy only buys strength,,6.89
+0,bt-20261002-095549,backtest,2026-09-25T09:35:00-04:00,TWLO,294.11,299.66,-1.85,5.11,PASS,rules,,down move — strategy only buys strength,,9.47
+0,bt-20261002-095549,backtest,2026-09-25T09:35:00-04:00,U,40.65,41.42,-1.86,3.8,PASS,rules,,down move — strategy only buys strength,,7.06
+0,bt-20261002-095549,backtest,2026-09-25T09:35:00-04:00,P,125.5515,121.88,3.01,2.34,BUY,rules,,trigger met,,7.06
+0,bt-20261002-095549,backtest,2026-09-25T09:35:00-04:00,ETSY,70.19,68.98,1.75,1.49,BUY,rules,,trigger met,,2.61
+0,bt-20261002-095549,backtest,2026-09-25T09:40:00-04:00,WDC,458.06,450.31,1.72,3.61,BUY,rules,,trigger met,,6.21
+0,bt-20261002-095549,backtest,2026-09-25T09:40:00-04:00,RIOT,23.0,23.48,-2.04,2.1,PASS,rules,,down move — strategy only buys strength,,4.29
+0,bt-20261002-095549,backtest,2026-09-25T09:50:00-04:00,INTC,125.1445,127.39,-1.76,2.43,PASS,rules,,down move — strategy only buys strength,,4.28
+0,bt-20261002-095549,backtest,2026-09-25T09:50:00-04:00,COHR,295.38,290.61,1.64,1.97,BUY,rules,,trigger met,,3.24
+0,bt-20261002-095549,backtest,2026-09-25T10:30:00-04:00,ROL,29.885,30.4,-1.69,1.49,PASS,rules,,down move — strategy only buys strength,,2.53
+0,bt-20261002-095549,backtest,2026-09-25T10:40:00-04:00,MGM,33.095,33.69,-1.77,3.78,PASS,rules,,down move — strategy only buys strength,,6.68
+0,bt-20261002-095549,backtest,2026-09-25T11:15:00-04:00,RGTI,17.0214,16.5,3.16,1.25,BUY,rules,,trigger met,,3.94
+0,bt-20261002-095549,backtest,2026-09-25T11:20:00-04:00,IONQ,46.27,44.98,2.87,1.85,BUY,rules,,trigger met,,5.31
+0,bt-20261002-095549,backtest,2026-09-25T11:20:00-04:00,CLSK,13.825,14.26,-3.05,1.36,SKIP,rules,,max open positions reached,,4.14
+0,bt-20261002-095549,backtest,2026-09-25T11:20:00-04:00,INTC,123.8899,127.39,-2.75,1.22,SKIP,rules,,max open positions reached,,3.34
+0,bt-20261002-095549,backtest,2026-09-25T11:20:00-04:00,ROL,29.8,30.4,-1.97,1.46,SKIP,rules,,max open positions reached,,2.87
+0,bt-20261002-095549,backtest,2026-09-25T11:25:00-04:00,TWLO,281.725,299.66,-5.99,2.74,SKIP,rules,,max open positions reached,,16.41
+0,bt-20261002-095549,backtest,2026-09-25T11:25:00-04:00,UNG,11.0001,11.55,-4.76,3.32,SKIP,rules,,max open positions reached,,15.8
+0,bt-20261002-095549,backtest,2026-09-25T11:25:00-04:00,MGM,32.64,33.69,-3.12,4.11,SKIP,rules,,max open positions reached,,12.81
+0,bt-20261002-095549,backtest,2026-09-25T11:25:00-04:00,GEN,22.2285,23.07,-3.65,2.6,SKIP,rules,,max open positions reached,,9.47
+0,bt-20261002-095549,backtest,2026-09-25T11:25:00-04:00,META,750.06,777.59,-3.54,1.93,SKIP,rules,,max open positions reached,,6.84
+0,bt-20261002-095549,backtest,2026-09-25T12:20:00-04:00,QBTS,17.75,17.48,1.54,1.21,BUY,rules,,trigger met,,1.86
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,ARM,290.98,310.32,-6.23,13.45,PASS,rules,,down move — strategy only buys strength,,62.32
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,RBLX,43.19,46.44,-7.0,7.37,PASS,rules,,down move — strategy only buys strength,,51.58
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,BE,272.28,288.7,-5.69,7.99,PASS,rules,,down move — strategy only buys strength,,45.47
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,SOXL,147.21,151.45,-2.8,16.19,PASS,rules,,down move — strategy only buys strength,,28.0
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,UNG,10.81,11.13,-2.88,6.59,PASS,rules,,down move — strategy only buys strength,,18.96
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,INTC,120.02,123.0,-2.42,6.29,PASS,rules,,down move — strategy only buys strength,,15.24
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,TWLO,270.02,275.8,-2.1,7.23,PASS,rules,,down move — strategy only buys strength,,15.14
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,QCOM,194.552,201.97,-3.67,4.12,PASS,rules,,down move — strategy only buys strength,,15.13
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,P,128.65,126.0,2.1,5.02,BUY,rules,,trigger met,,10.55
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,GEN,21.145,21.62,-2.2,3.86,SKIP,rules,,max open positions reached,,8.49
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,SMCI,42.4635,43.26,-1.84,4.56,SKIP,rules,,max open positions reached,,8.4
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,ILMN,265.91,270.0,-1.51,3.67,SKIP,rules,,max open positions reached,,5.56
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,RIOT,22.37,23.0,-2.74,1.79,SKIP,rules,,max open positions reached,,4.89
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,CLSK,13.72,13.95,-1.65,2.95,SKIP,rules,,max open positions reached,,4.87
+0,bt-20261002-095549,backtest,2026-09-28T09:30:00-04:00,BIRK,33.043,33.6,-1.66,1.8,SKIP,rules,,max open positions reached,,2.98
+0,bt-20261002-095549,backtest,2026-09-28T09:35:00-04:00,DDOG,262.975,268.13,-1.92,3.68,SKIP,rules,,max open positions reached,,7.07
+0,bt-20261002-095549,backtest,2026-09-28T09:35:00-04:00,DKNG,21.66,22.02,-1.63,3.22,SKIP,rules,,max open positions reached,,5.26
+0,bt-20261002-095549,backtest,2026-09-28T09:35:00-04:00,BKNG,161.29,163.95,-1.62,2.96,SKIP,rules,,max open positions reached,,4.81
+0,bt-20261002-095549,backtest,2026-09-28T09:35:00-04:00,DELL,551.605,562.89,-2.0,2.34,SKIP,rules,,max open positions reached,,4.69
+0,bt-20261002-095549,backtest,2026-09-28T09:35:00-04:00,ON,75.77,77.2,-1.85,1.46,SKIP,rules,,max open positions reached,,2.71
+0,bt-20261002-095549,backtest,2026-09-28T09:40:00-04:00,ZS,196.795,193.05,1.94,4.86,SKIP,rules,,max open positions reached,,9.43
+0,bt-20261002-095549,backtest,2026-09-28T09:40:00-04:00,MGM,32.01,32.58,-1.75,5.06,SKIP,rules,,max open positions reached,,8.85
+0,bt-20261002-095549,backtest,2026-09-28T09:40:00-04:00,HUM,404.985,397.93,1.77,3.55,SKIP,rules,,max open positions reached,,6.3
+0,bt-20261002-095549,backtest,2026-09-28T09:40:00-04:00,FSLR,173.99,177.71,-2.09,2.88,SKIP,rules,,max open positions reached,,6.02
+0,bt-20261002-095549,backtest,2026-09-28T09:45:00-04:00,PSKY,10.265,9.96,3.06,1.93,SKIP,rules,,max open positions reached,,5.9
+0,bt-20261002-095549,backtest,2026-09-28T09:45:00-04:00,GNRC,203.83,208.14,-2.07,2.75,SKIP,rules,,max open positions reached,,5.69
+0,bt-20261002-095549,backtest,2026-09-28T09:45:00-04:00,CAVA,52.41,51.58,1.61,1.25,SKIP,rules,,max open positions reached,,2.01
+0,bt-20261002-095549,backtest,2026-09-28T09:55:00-04:00,OKTA,198.535,195.19,1.71,1.61,SKIP,rules,,max open positions reached,,2.76
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,ARM,284.72,310.32,-8.25,5.94,SKIP,rules,,max open positions reached,,49.02
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,SOXL,142.8,151.45,-5.71,3.76,SKIP,rules,,max open positions reached,,21.46
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,RBLX,42.845,46.44,-7.74,2.57,SKIP,rules,,max open positions reached,,19.89
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,BE,269.79,288.7,-6.55,2.82,SKIP,rules,,max open positions reached,,18.49
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,QCOM,188.56,201.97,-6.64,2.67,SKIP,rules,,max open positions reached,,17.75
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,INTC,118.6,123.0,-3.58,2.55,SKIP,rules,,max open positions reached,,9.12
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,GEN,20.83,21.62,-3.65,2.09,SKIP,rules,,max open positions reached,,7.62
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,UNG,10.79,11.13,-3.05,1.42,SKIP,rules,,max open positions reached,,4.34
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,SMCI,42.11,43.26,-2.66,1.53,SKIP,rules,,max open positions reached,,4.08
+0,bt-20261002-095549,backtest,2026-09-28T10:00:00-04:00,ILMN,275.005,270.0,1.85,2.13,SKIP,rules,,max open positions reached,,3.95
+0,bt-20261002-095549,backtest,2026-09-28T10:05:00-04:00,DKNG,21.575,22.02,-2.02,2.22,SKIP,rules,,max open positions reached,,4.5
+0,bt-20261002-095549,backtest,2026-09-28T10:05:00-04:00,DELL,543.9,562.89,-3.37,1.23,SKIP,rules,,max open positions reached,,4.14
+0,bt-20261002-095549,backtest,2026-09-28T10:05:00-04:00,ON,75.09,77.2,-2.73,1.49,SKIP,rules,,max open positions reached,,4.07
+0,bt-20261002-095549,backtest,2026-09-28T10:10:00-04:00,ZS,197.95,193.05,2.54,2.96,SKIP,rules,,max open positions reached,,7.5
+0,bt-20261002-095549,backtest,2026-09-28T10:10:00-04:00,FSLR,174.7139,177.71,-1.69,1.43,SKIP,rules,,max open positions reached,,2.41
+0,bt-20261002-095549,backtest,2026-09-28T10:15:00-04:00,PSKY,10.335,9.96,3.77,2.02,SKIP,rules,,max open positions reached,,7.61
+0,bt-20261002-095549,backtest,2026-09-28T10:15:00-04:00,AKAM,111.98,113.94,-1.72,3.5,SKIP,rules,,max open positions reached,,6.02
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,ARM,283.04,310.32,-8.79,4.28,SKIP,rules,,max open positions reached,,37.59
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,SOXL,141.14,151.45,-6.81,2.67,SKIP,rules,,max open positions reached,,18.2
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,BE,265.98,288.7,-7.87,2.1,SKIP,rules,,max open positions reached,,16.49
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,RBLX,42.62,46.44,-8.23,1.92,SKIP,rules,,max open positions reached,,15.8
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,QCOM,188.86,201.97,-6.49,1.93,SKIP,rules,,max open positions reached,,12.51
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,INTC,117.46,123.0,-4.5,1.9,SKIP,rules,,max open positions reached,,8.54
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,GEN,21.025,21.62,-2.75,2.04,SKIP,rules,,max open positions reached,,5.61
+0,bt-20261002-095549,backtest,2026-09-28T10:30:00-04:00,SMCI,41.515,43.26,-4.03,1.32,SKIP,rules,,max open positions reached,,5.31
+0,bt-20261002-095549,backtest,2026-09-28T10:35:00-04:00,DKNG,21.315,22.02,-3.2,2.04,SKIP,rules,,max open positions reached,,6.54
+0,bt-20261002-095549,backtest,2026-09-28T10:35:00-04:00,ON,75.315,77.2,-2.44,1.45,SKIP,rules,,max open positions reached,,3.54
+0,bt-20261002-095549,backtest,2026-09-28T10:40:00-04:00,ZS,196.65,193.05,1.86,2.17,SKIP,rules,,max open positions reached,,4.05
+0,bt-20261002-095549,backtest,2026-09-28T10:45:00-04:00,AKAM,110.375,113.94,-3.13,3.03,SKIP,rules,,max open positions reached,,9.47
+0,bt-20261002-095549,backtest,2026-09-28T10:45:00-04:00,PSKY,10.375,9.96,4.17,1.84,SKIP,rules,,max open positions reached,,7.67
+0,bt-20261002-095549,backtest,2026-09-28T10:45:00-04:00,GNRC,204.81,208.14,-1.6,1.25,SKIP,rules,,max open positions reached,,2.0
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,ARM,283.565,310.32,-8.62,3.65,SKIP,rules,,max open positions reached,,31.51
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,SOXL,137.11,151.45,-9.47,2.49,SKIP,rules,,max open positions reached,,23.57
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,BE,262.75,288.7,-8.99,1.89,SKIP,rules,,max open positions reached,,17.0
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,RBLX,42.675,46.44,-8.11,1.6,SKIP,rules,,max open positions reached,,12.99
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,INTC,115.446,123.0,-6.14,1.73,SKIP,rules,,max open positions reached,,10.59
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,QCOM,189.44,201.97,-6.2,1.61,SKIP,rules,,max open positions reached,,9.98
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,SMCI,41.135,43.26,-4.91,1.23,SKIP,rules,,max open positions reached,,6.02
+0,bt-20261002-095549,backtest,2026-09-28T11:00:00-04:00,GEN,21.015,21.62,-2.8,1.83,SKIP,rules,,max open positions reached,,5.12
+0,bt-20261002-095549,backtest,2026-09-28T11:05:00-04:00,DKNG,21.385,22.02,-2.88,1.8,SKIP,rules,,max open positions reached,,5.2
+0,bt-20261002-095549,backtest,2026-09-28T11:05:00-04:00,ON,74.484,77.2,-3.52,1.4,SKIP,rules,,max open positions reached,,4.92
+0,bt-20261002-095549,backtest,2026-09-28T11:10:00-04:00,ZS,198.58,193.05,2.86,1.88,SKIP,rules,,max open positions reached,,5.38
+0,bt-20261002-095549,backtest,2026-09-28T11:10:00-04:00,TWLO,279.98,275.8,1.52,1.66,SKIP,rules,,max open positions reached,,2.52
+0,bt-20261002-095549,backtest,2026-09-28T11:10:00-04:00,HUM,404.03,397.93,1.53,1.38,SKIP,rules,,max open positions reached,,2.11
+0,bt-20261002-095549,backtest,2026-09-28T11:15:00-04:00,AKAM,110.38,113.94,-3.12,2.66,SKIP,rules,,max open positions reached,,8.3
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,ARM,284.155,310.32,-8.43,3.08,SKIP,rules,,max open positions reached,,25.95
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,SOXL,137.53,151.45,-9.19,2.13,SKIP,rules,,max open positions reached,,19.61
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,BE,260.7576,288.7,-9.68,1.67,SKIP,rules,,max open positions reached,,16.19
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,RBLX,43.475,46.44,-6.38,2.01,SKIP,rules,,max open positions reached,,12.86
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,INTC,114.95,123.0,-6.54,1.54,SKIP,rules,,max open positions reached,,10.07
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,QCOM,189.165,201.97,-6.34,1.37,SKIP,rules,,max open positions reached,,8.7
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,GEN,20.955,21.62,-3.08,1.73,SKIP,rules,,max open positions reached,,5.31
+0,bt-20261002-095549,backtest,2026-09-28T11:30:00-04:00,SMCI,41.5271,43.26,-4.01,1.21,SKIP,rules,,max open positions reached,,4.85
+0,bt-20261002-095549,backtest,2026-09-28T11:35:00-04:00,DKNG,21.51,22.02,-2.32,1.58,SKIP,rules,,max open positions reached,,3.66
+0,bt-20261002-095549,backtest,2026-09-28T11:35:00-04:00,ON,74.97,77.2,-2.89,1.26,SKIP,rules,,max open positions reached,,3.64
+0,bt-20261002-095549,backtest,2026-09-28T11:40:00-04:00,ZS,199.74,193.05,3.47,1.65,SKIP,rules,,max open positions reached,,5.73
+0,bt-20261002-095549,backtest,2026-09-28T11:40:00-04:00,TWLO,282.7,275.8,2.5,1.58,SKIP,rules,,max open positions reached,,3.96
+0,bt-20261002-095549,backtest,2026-09-28T11:45:00-04:00,AKAM,110.585,113.94,-2.94,2.32,SKIP,rules,,max open positions reached,,6.83
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,ARM,283.51,310.32,-8.64,2.72,SKIP,rules,,max open positions reached,,23.5
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,SOXL,138.895,151.45,-8.29,1.86,SKIP,rules,,max open positions reached,,15.44
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,BE,263.74,288.7,-8.65,1.48,SKIP,rules,,max open positions reached,,12.77
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,RBLX,43.2291,46.44,-6.91,1.81,SKIP,rules,,max open positions reached,,12.5
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,INTC,115.105,123.0,-6.42,1.39,SKIP,rules,,max open positions reached,,8.91
+0,bt-20261002-095549,backtest,2026-09-28T12:00:00-04:00,GEN,20.945,21.62,-3.12,1.67,SKIP,rules,,max open positions reached,,5.2
+0,bt-20261002-095549,backtest,2026-09-28T12:05:00-04:00,DKNG,21.425,22.02,-2.7,1.47,SKIP,rules,,max open positions reached,,3.98
+0,bt-20261002-095549,backtest,2026-09-28T12:10:00-04:00,ZS,201.24,193.05,4.24,1.49,SKIP,rules,,max open positions reached,,6.31
+0,bt-20261002-095549,backtest,2026-09-28T12:10:00-04:00,TWLO,284.69,275.8,3.22,1.45,SKIP,rules,,max open positions reached,,4.66
+0,bt-20261002-095549,backtest,2026-09-28T12:15:00-04:00,AKAM,110.725,113.94,-2.82,2.08,SKIP,rules,,max open positions reached,,5.86
+0,bt-20261002-095549,backtest,2026-09-28T12:25:00-04:00,PSKY,10.235,9.96,2.76,1.29,SKIP,rules,,max open positions reached,,3.56
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,ARM,286.6197,310.32,-7.64,2.47,SKIP,rules,,max open positions reached,,18.87
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,BE,265.055,288.7,-8.19,1.37,SKIP,rules,,max open positions reached,,11.24
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,RBLX,43.69,46.44,-5.92,1.69,SKIP,rules,,max open positions reached,,10.02
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,SOXL,143.31,151.45,-5.37,1.79,SKIP,rules,,max open positions reached,,9.62
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,INTC,116.14,123.0,-5.58,1.3,SKIP,rules,,max open positions reached,,7.27
+0,bt-20261002-095549,backtest,2026-09-28T12:30:00-04:00,GEN,20.945,21.62,-3.12,1.63,SKIP,rules,,max open positions reached,,5.09
+0,bt-20261002-095549,backtest,2026-09-28T12:35:00-04:00,DKNG,21.5998,22.02,-1.91,1.36,SKIP,rules,,max open positions reached,,2.59
+0,bt-20261002-095549,backtest,2026-09-28T12:40:00-04:00,ZS,200.28,193.05,3.75,1.33,SKIP,rules,,max open positions reached,,4.99
+0,bt-20261002-095549,backtest,2026-09-28T12:40:00-04:00,TWLO,282.685,275.8,2.5,1.37,SKIP,rules,,max open positions reached,,3.42
+0,bt-20261002-095549,backtest,2026-09-28T12:45:00-04:00,AKAM,109.905,113.94,-3.54,2.02,SKIP,rules,,max open positions reached,,7.17
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,ARM,284.17,310.32,-8.43,2.24,SKIP,rules,,max open positions reached,,18.87
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,SOXL,140.865,151.45,-6.99,1.63,SKIP,rules,,max open positions reached,,11.37
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,BE,264.37,288.7,-8.43,1.24,SKIP,rules,,max open positions reached,,10.46
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,RBLX,43.56,46.44,-6.2,1.63,SKIP,rules,,max open positions reached,,10.08
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,INTC,115.68,123.0,-5.95,1.21,SKIP,rules,,max open positions reached,,7.22
+0,bt-20261002-095549,backtest,2026-09-28T13:00:00-04:00,GEN,20.845,21.62,-3.58,1.59,SKIP,rules,,max open positions reached,,5.7
+0,bt-20261002-095549,backtest,2026-09-28T13:05:00-04:00,DKNG,21.55,22.02,-2.13,1.25,SKIP,rules,,max open positions reached,,2.66
+0,bt-20261002-095549,backtest,2026-09-28T13:10:00-04:00,ZS,200.7699,193.05,4.0,1.21,SKIP,rules,,max open positions reached,,4.82
+0,bt-20261002-095549,backtest,2026-09-28T13:10:00-04:00,TWLO,284.655,275.8,3.21,1.26,SKIP,rules,,max open positions reached,,4.06
+0,bt-20261002-095549,backtest,2026-09-28T13:15:00-04:00,AKAM,110.855,113.94,-2.71,1.94,SKIP,rules,,max open positions reached,,5.26
+0,bt-20261002-095549,backtest,2026-09-28T13:30:00-04:00,ARM,285.47,310.32,-8.01,2.08,SKIP,rules,,max open positions reached,,16.66
+0,bt-20261002-095549,backtest,2026-09-28T13:30:00-04:00,RBLX,42.95,46.44,-7.52,1.59,SKIP,rules,,max open positions reached,,11.96
+0,bt-20261002-095549,backtest,2026-09-28T13:30:00-04:00,SOXL,142.5,151.45,-5.91,1.51,SKIP,rules,,max open positions reached,,8.94
+0,bt-20261002-095549,backtest,2026-09-28T13:30:00-04:00,GEN,21.015,21.62,-2.8,1.6,SKIP,rules,,max open positions reached,,4.47
+0,bt-20261002-095549,backtest,2026-09-28T13:45:00-04:00,AKAM,110.49,113.94,-3.03,1.85,SKIP,rules,,max open positions reached,,5.6
+0,bt-20261002-095549,backtest,2026-09-28T14:00:00-04:00,ARM,287.61,310.32,-7.32,1.92,SKIP,rules,,max open positions reached,,14.05
+0,bt-20261002-095549,backtest,2026-09-28T14:00:00-04:00,RBLX,42.92,46.44,-7.58,1.53,SKIP,rules,,max open positions reached,,11.63
+0,bt-20261002-095549,backtest,2026-09-28T14:00:00-04:00,SOXL,142.285,151.45,-6.05,1.37,SKIP,rules,,max open positions reached,,8.31
+0,bt-20261002-095549,backtest,2026-09-28T14:00:00-04:00,GEN,21.065,21.62,-2.57,1.65,SKIP,rules,,max open positions reached,,4.23
+0,bt-20261002-095549,backtest,2026-09-28T14:15:00-04:00,AKAM,111.19,113.94,-2.41,1.74,SKIP,rules,,max open positions reached,,4.21
+0,bt-20261002-095549,backtest,2026-09-28T14:30:00-04:00,ARM,284.51,310.32,-8.32,1.81,SKIP,rules,,max open positions reached,,15.03
+0,bt-20261002-095549,backtest,2026-09-28T14:30:00-04:00,RBLX,42.71,46.44,-8.03,1.45,SKIP,rules,,max open positions reached,,11.62
+0,bt-20261002-095549,backtest,2026-09-28T14:30:00-04:00,SOXL,141.8401,151.45,-6.35,1.26,SKIP,rules,,max open positions reached,,8.0
+0,bt-20261002-095549,backtest,2026-09-28T14:30:00-04:00,GEN,21.035,21.62,-2.71,1.64,SKIP,rules,,max open positions reached,,4.45
+0,bt-20261002-095549,backtest,2026-09-28T14:45:00-04:00,AKAM,110.403,113.94,-3.1,1.64,SKIP,rules,,max open positions reached,,5.08
+0,bt-20261002-095549,backtest,2026-09-28T14:50:00-04:00,MGM,32.06,32.58,-1.6,1.66,SKIP,rules,,max open positions reached,,2.64
+0,bt-20261002-095549,backtest,2026-09-28T15:00:00-04:00,ARM,285.56,310.32,-7.98,1.76,SKIP,rules,,max open positions reached,,14.07
+0,bt-20261002-095549,backtest,2026-09-28T15:00:00-04:00,RBLX,42.66,46.44,-8.14,1.37,SKIP,rules,,max open positions reached,,11.14
+0,bt-20261002-095549,backtest,2026-09-28T15:00:00-04:00,GEN,20.99,21.62,-2.91,1.63,SKIP,rules,,max open positions reached,,4.74
+0,bt-20261002-095549,backtest,2026-09-28T15:15:00-04:00,AKAM,109.96,113.94,-3.49,1.61,SKIP,rules,,max open positions reached,,5.62
+0,bt-20261002-095549,backtest,2026-09-28T15:20:00-04:00,MGM,31.93,32.58,-2.0,1.71,SKIP,rules,,max open positions reached,,3.42
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,BE,282.95,262.87,7.64,13.79,BUY,rules,,trigger met,,76.39
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,GEN,21.64,20.85,3.79,16.45,SKIP,rules,,max open positions reached,,37.89
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,MDB,328.49,334.68,-1.85,24.63,SKIP,rules,,max open positions reached,,18.5
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,BA,187.375,184.39,1.62,10.29,SKIP,rules,,max open positions reached,,16.19
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,LITE,943.84,921.32,2.44,5.45,SKIP,rules,,max open positions reached,,13.32
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,OKTA,207.43,202.18,2.6,3.62,SKIP,rules,,max open positions reached,,9.39
+0,bt-20261002-095549,backtest,2026-09-29T09:30:00-04:00,U,39.225,39.86,-1.59,2.09,SKIP,rules,,max open positions reached,,3.33
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,SOXL,148.114,142.29,4.09,7.97,BUY,rules,,trigger met,,32.64
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,CVNA,62.84,60.47,3.92,4.76,SKIP,rules,,max open positions reached,,18.65
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,ARM,291.786,283.33,2.98,6.19,SKIP,rules,,max open positions reached,,18.49
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,COHR,289.5,282.45,2.5,2.4,SKIP,rules,,max open positions reached,,5.98
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,AFRM,69.3424,67.21,3.17,1.85,SKIP,rules,,max open positions reached,,5.87
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,DUOL,136.375,134.3,1.55,1.45,SKIP,rules,,max open positions reached,,2.24
+0,bt-20261002-095549,backtest,2026-09-29T09:35:00-04:00,DASH,181.155,178.39,1.55,1.26,SKIP,rules,,max open positions reached,,1.95
+0,bt-20261002-095549,backtest,2026-09-29T09:40:00-04:00,PANW,380.71,392.09,-2.9,2.05,SKIP,rules,,max open positions reached,,5.95
+0,bt-20261002-095549,backtest,2026-09-29T09:40:00-04:00,RBLX,40.975,41.86,-2.11,2.48,SKIP,rules,,max open positions reached,,5.23
+0,bt-20261002-095549,backtest,2026-09-29T09:40:00-04:00,DKNG,20.8381,21.16,-1.52,1.6,SKIP,rules,,max open positions reached,,2.43
+0,bt-20261002-095549,backtest,2026-09-29T09:40:00-04:00,RIOT,21.98,21.62,1.67,1.46,SKIP,rules,,max open positions reached,,2.43
+0,bt-20261002-095549,backtest,2026-09-29T09:45:00-04:00,ALAB,357.1,351.31,1.65,1.45,SKIP,rules,,max open positions reached,,2.39
+0,bt-20261002-095549,backtest,2026-09-29T09:55:00-04:00,LITE,996.02,921.32,8.11,4.52,BUY,rules,,trigger met,,36.63
+0,bt-20261002-095549,backtest,2026-09-29T10:00:00-04:00,MDB,329.2475,334.68,-1.62,9.11,SKIP,rules,,max open positions reached,,14.78
+0,bt-20261002-095549,backtest,2026-09-29T10:00:00-04:00,BA,190.095,184.39,3.09,4.2,SKIP,rules,,max open positions reached,,13.0
+0,bt-20261002-095549,backtest,2026-09-29T10:00:00-04:00,U,38.98,39.86,-2.21,1.66,SKIP,rules,,max open positions reached,,3.67
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,ARM,296.705,283.33,4.72,3.66,SKIP,rules,,max open positions reached,,17.28
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,CVNA,64.02,60.47,5.87,2.8,SKIP,rules,,max open positions reached,,16.45
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,GEN,20.387,20.85,-2.22,5.55,SKIP,rules,,max open positions reached,,12.33
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,COHR,296.925,282.45,5.12,2.05,SKIP,rules,,max open positions reached,,10.49
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,NU,12.45,12.23,1.8,1.47,SKIP,rules,,max open positions reached,,2.64
+0,bt-20261002-095549,backtest,2026-09-29T10:05:00-04:00,PSKY,10.06,10.28,-2.14,1.21,SKIP,rules,,max open positions reached,,2.59
+0,bt-20261002-095549,backtest,2026-09-29T10:10:00-04:00,AFRM,69.4,67.21,3.26,1.42,SKIP,rules,,max open positions reached,,4.64
+0,bt-20261002-095549,backtest,2026-09-29T10:10:00-04:00,PANW,380.825,392.09,-2.87,1.29,SKIP,rules,,max open positions reached,,3.71
+0,bt-20261002-095549,backtest,2026-09-29T10:10:00-04:00,DASH,183.04,178.39,2.61,1.28,SKIP,rules,,max open positions reached,,3.33
+0,bt-20261002-095549,backtest,2026-09-29T10:10:00-04:00,AKAM,107.31,108.99,-1.54,2.14,SKIP,rules,,max open positions reached,,3.3
+0,bt-20261002-095549,backtest,2026-09-29T10:10:00-04:00,ORCL,135.05,132.6,1.85,1.74,SKIP,rules,,max open positions reached,,3.21
+0,bt-20261002-095549,backtest,2026-09-29T10:25:00-04:00,CLSK,13.65,13.34,2.32,1.27,SKIP,rules,,max open positions reached,,2.95
+0,bt-20261002-095549,backtest,2026-09-29T10:30:00-04:00,MDB,326.65,334.68,-2.4,7.14,SKIP,rules,,max open positions reached,,17.13
+0,bt-20261002-095549,backtest,2026-09-29T10:30:00-04:00,BA,189.53,184.39,2.79,2.98,SKIP,rules,,max open positions reached,,8.31
+0,bt-20261002-095549,backtest,2026-09-29T10:35:00-04:00,ARM,300.43,283.33,6.04,2.92,SKIP,rules,,max open positions reached,,17.65
+0,bt-20261002-095549,backtest,2026-09-29T10:35:00-04:00,COHR,302.11,282.45,6.96,1.78,SKIP,rules,,max open positions reached,,12.42
+0,bt-20261002-095549,backtest,2026-09-29T10:35:00-04:00,CVNA,63.915,60.47,5.7,2.13,SKIP,rules,,max open positions reached,,12.16
+0,bt-20261002-095549,backtest,2026-09-29T10:35:00-04:00,RIVN,15.105,14.79,2.13,1.45,SKIP,rules,,max open positions reached,,3.09
+0,bt-20261002-095549,backtest,2026-09-29T10:35:00-04:00,NU,12.475,12.23,2.0,1.46,SKIP,rules,,max open positions reached,,2.93
+0,bt-20261002-095549,backtest,2026-09-29T10:40:00-04:00,ORCL,142.725,132.6,7.64,3.38,SKIP,rules,,max open positions reached,,25.82
+0,bt-20261002-095549,backtest,2026-09-29T10:40:00-04:00,DASH,183.2425,178.39,2.72,1.34,SKIP,rules,,max open positions reached,,3.65
+0,bt-20261002-095549,backtest,2026-09-29T10:40:00-04:00,AKAM,107.1299,108.99,-1.71,1.85,SKIP,rules,,max open positions reached,,3.16
+0,bt-20261002-095549,backtest,2026-09-29T10:50:00-04:00,INTC,118.3342,116.03,1.99,1.5,SKIP,rules,,max open positions reached,,2.97
+0,bt-20261002-095549,backtest,2026-09-29T11:00:00-04:00,MDB,325.1543,334.68,-2.85,5.96,SKIP,rules,,max open positions reached,,16.96
+0,bt-20261002-095549,backtest,2026-09-29T11:00:00-04:00,DKNG,20.78,21.16,-1.8,1.42,SKIP,rules,,max open positions reached,,2.56
+0,bt-20261002-095549,backtest,2026-09-29T11:05:00-04:00,ARM,298.23,283.33,5.26,2.31,SKIP,rules,,max open positions reached,,12.13
+0,bt-20261002-095549,backtest,2026-09-29T11:05:00-04:00,CVNA,64.37,60.47,6.45,1.79,SKIP,rules,,max open positions reached,,11.56
+0,bt-20261002-095549,backtest,2026-09-29T11:05:00-04:00,COHR,297.27,282.45,5.25,1.5,SKIP,rules,,max open positions reached,,7.88
+0,bt-20261002-095549,backtest,2026-09-29T11:05:00-04:00,RIVN,15.055,14.79,1.79,1.63,SKIP,rules,,max open positions reached,,2.92
+0,bt-20261002-095549,backtest,2026-09-29T11:05:00-04:00,NU,12.465,12.23,1.92,1.28,SKIP,rules,,max open positions reached,,2.46
+0,bt-20261002-095549,backtest,2026-09-29T11:10:00-04:00,ORCL,140.805,132.6,6.19,3.02,SKIP,rules,,max open positions reached,,18.69
+0,bt-20261002-095549,backtest,2026-09-29T11:10:00-04:00,AKAM,107.245,108.99,-1.6,1.51,SKIP,rules,,max open positions reached,,2.42
+0,bt-20261002-095549,backtest,2026-09-29T11:20:00-04:00,GEN,20.535,20.85,-1.51,3.32,SKIP,rules,,max open positions reached,,5.01
+0,bt-20261002-095549,backtest,2026-09-29T11:30:00-04:00,MDB,327.825,334.68,-2.05,5.23,SKIP,rules,,max open positions reached,,10.7
+0,bt-20261002-095549,backtest,2026-09-29T11:30:00-04:00,DKNG,20.5334,21.16,-2.96,1.34,SKIP,rules,,max open positions reached,,3.96
+0,bt-20261002-095549,backtest,2026-09-29T11:30:00-04:00,DASH,183.525,178.39,2.88,1.21,SKIP,rules,,max open positions reached,,3.48
+0,bt-20261002-095549,backtest,2026-09-29T11:35:00-04:00,ARM,299.005,283.33,5.53,2.23,SKIP,rules,,max open positions reached,,12.34
+0,bt-20261002-095549,backtest,2026-09-29T11:35:00-04:00,CVNA,63.93,60.47,5.72,1.62,SKIP,rules,,max open positions reached,,9.28
+0,bt-20261002-095549,backtest,2026-09-29T11:35:00-04:00,COHR,296.475,282.45,4.97,1.36,SKIP,rules,,max open positions reached,,6.74
+0,bt-20261002-095549,backtest,2026-09-29T11:35:00-04:00,RIVN,15.1523,14.79,2.45,1.43,SKIP,rules,,max open positions reached,,3.51
+0,bt-20261002-095549,backtest,2026-09-29T11:35:00-04:00,NU,12.435,12.23,1.68,1.26,SKIP,rules,,max open positions reached,,2.12
+0,bt-20261002-095549,backtest,2026-09-29T11:40:00-04:00,ORCL,139.63,132.6,5.3,2.64,SKIP,rules,,max open positions reached,,13.99
+0,bt-20261002-095549,backtest,2026-09-29T11:40:00-04:00,AKAM,106.18,108.99,-2.58,1.45,SKIP,rules,,max open positions reached,,3.74
+0,bt-20261002-095549,backtest,2026-09-29T11:50:00-04:00,PSKY,9.95,10.28,-3.21,1.2,SKIP,rules,,max open positions reached,,3.86
+0,bt-20261002-095549,backtest,2026-09-29T12:00:00-04:00,MDB,327.89,334.68,-2.03,4.53,SKIP,rules,,max open positions reached,,9.19
+0,bt-20261002-095549,backtest,2026-09-29T12:00:00-04:00,DKNG,20.565,21.16,-2.81,1.2,SKIP,rules,,max open positions reached,,3.38
+0,bt-20261002-095549,backtest,2026-09-29T12:05:00-04:00,ARM,298.25,283.33,5.27,1.9,SKIP,rules,,max open positions reached,,10.03
+0,bt-20261002-095549,backtest,2026-09-29T12:05:00-04:00,RIVN,15.095,14.79,2.06,1.28,SKIP,rules,,max open positions reached,,2.64
+0,bt-20261002-095549,backtest,2026-09-29T12:10:00-04:00,ORCL,139.41,132.6,5.14,2.26,SKIP,rules,,max open positions reached,,11.6
+0,bt-20261002-095549,backtest,2026-09-29T12:10:00-04:00,GEN,20.515,20.85,-1.61,2.86,SKIP,rules,,max open positions reached,,4.59
+0,bt-20261002-095549,backtest,2026-09-29T12:10:00-04:00,AKAM,106.1,108.99,-2.65,1.44,SKIP,rules,,max open positions reached,,3.82
+0,bt-20261002-095549,backtest,2026-09-29T12:20:00-04:00,CVNA,63.65,60.47,5.26,1.39,SKIP,rules,,max open positions reached,,7.3
+0,bt-20261002-095549,backtest,2026-09-29T12:30:00-04:00,DKNG,20.305,21.16,-4.04,1.21,SKIP,rules,,max open positions reached,,4.89
+0,bt-20261002-095549,backtest,2026-09-29T12:35:00-04:00,ARM,297.47,283.33,4.99,1.66,SKIP,rules,,max open positions reached,,8.31
+0,bt-20261002-095549,backtest,2026-09-29T12:40:00-04:00,MDB,329.0,334.68,-1.7,3.87,SKIP,rules,,max open positions reached,,6.57
+0,bt-20261002-095549,backtest,2026-09-29T12:40:00-04:00,GEN,20.46,20.85,-1.87,2.93,SKIP,rules,,max open positions reached,,5.49
+0,bt-20261002-095549,backtest,2026-09-29T12:40:00-04:00,AKAM,106.2,108.99,-2.56,1.3,SKIP,rules,,max open positions reached,,3.33
+0,bt-20261002-095549,backtest,2026-09-29T13:00:00-04:00,DKNG,20.2,21.16,-4.54,1.21,SKIP,rules,,max open positions reached,,5.47
+0,bt-20261002-095549,backtest,2026-09-29T13:05:00-04:00,ARM,297.28,283.33,4.92,1.5,SKIP,rules,,max open positions reached,,7.38
+0,bt-20261002-095549,backtest,2026-09-29T13:10:00-04:00,GEN,20.515,20.85,-1.61,2.76,SKIP,rules,,max open positions reached,,4.44
+0,bt-20261002-095549,backtest,2026-09-29T13:10:00-04:00,AKAM,106.39,108.99,-2.39,1.24,SKIP,rules,,max open positions reached,,2.95
+0,bt-20261002-095549,backtest,2026-09-29T13:35:00-04:00,ARM,298.13,283.33,5.22,1.36,SKIP,rules,,max open positions reached,,7.12
+0,bt-20261002-095549,backtest,2026-09-29T13:45:00-04:00,GEN,20.51,20.85,-1.63,2.5,SKIP,rules,,max open positions reached,,4.08
+0,bt-20261002-095549,backtest,2026-09-29T14:05:00-04:00,ARM,296.8,283.33,4.75,1.26,SKIP,rules,,max open positions reached,,6.01
+0,bt-20261002-095549,backtest,2026-09-29T14:25:00-04:00,DKNG,19.875,21.16,-6.07,1.28,SKIP,rules,,max open positions reached,,7.8
+0,bt-20261002-095549,backtest,2026-09-29T14:50:00-04:00,RBLX,41.23,41.86,-1.51,1.47,SKIP,rules,,max open positions reached,,2.22
+0,bt-20261002-095549,backtest,2026-09-29T14:55:00-04:00,DKNG,19.685,21.16,-6.97,1.48,SKIP,rules,,max open positions reached,,10.32
+0,bt-20261002-095549,backtest,2026-09-29T15:25:00-04:00,DKNG,19.69,21.16,-6.95,1.61,SKIP,rules,,max open positions reached,,11.15
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,MRNA,187.77,203.46,-7.71,8.83,PASS,rules,,down move — strategy only buys strength,,68.08
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,MDB,357.575,337.19,6.05,19.09,BUY,rules,,trigger met,,60.46
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,FICO,593.94,617.87,-3.87,20.4,SKIP,rules,,max open positions reached,,38.73
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,PSKY,10.235,9.99,2.45,11.15,SKIP,rules,,max open positions reached,,24.52
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,SOXL,149.96,147.0,2.01,13.64,SKIP,rules,,max open positions reached,,20.14
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,META,723.472,738.79,-2.07,5.55,SKIP,rules,,max open positions reached,,11.5
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,AKAM,110.165,108.45,1.58,4.69,SKIP,rules,,max open positions reached,,7.41
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,CBOE,265.96,261.75,1.61,2.42,SKIP,rules,,max open positions reached,,3.89
+0,bt-20261002-095549,backtest,2026-09-30T09:30:00-04:00,CVNA,62.58,63.62,-1.63,1.89,SKIP,rules,,max open positions reached,,3.09
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,USO,146.885,143.35,2.47,5.89,BUY,rules,,trigger met,,14.52
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,GLW,154.99,158.71,-2.34,2.94,SKIP,rules,,max open positions reached,,6.89
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,DASH,182.825,187.1,-2.28,2.07,SKIP,rules,,max open positions reached,,4.74
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,DKNG,19.28,19.59,-1.58,2.54,SKIP,rules,,max open positions reached,,4.01
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,TWLO,296.41,290.78,1.94,1.87,SKIP,rules,,max open positions reached,,3.63
+0,bt-20261002-095549,backtest,2026-09-30T09:35:00-04:00,S,23.8195,23.31,2.19,1.31,SKIP,rules,,max open positions reached,,2.87
+0,bt-20261002-095549,backtest,2026-09-30T09:40:00-04:00,GEN,21.2081,20.85,1.72,4.78,SKIP,rules,,max open positions reached,,8.21
+0,bt-20261002-095549,backtest,2026-09-30T09:40:00-04:00,LITE,957.31,973.49,-1.66,3.86,SKIP,rules,,max open positions reached,,6.42
+0,bt-20261002-095549,backtest,2026-09-30T09:40:00-04:00,COHR,285.705,292.21,-2.23,2.23,SKIP,rules,,max open positions reached,,4.96
+0,bt-20261002-095549,backtest,2026-09-30T09:40:00-04:00,RBLX,41.83,41.18,1.58,1.62,SKIP,rules,,max open positions reached,,2.55
+0,bt-20261002-095549,backtest,2026-09-30T09:40:00-04:00,W,103.71,101.95,1.73,1.28,SKIP,rules,,max open positions reached,,2.21
+0,bt-20261002-095549,backtest,2026-09-30T09:45:00-04:00,FDS,265.345,259.97,2.07,4.57,SKIP,rules,,max open positions reached,,9.45
+0,bt-20261002-095549,backtest,2026-09-30T09:45:00-04:00,RCL,265.255,260.67,1.76,2.32,SKIP,rules,,max open positions reached,,4.08
+0,bt-20261002-095549,backtest,2026-09-30T09:45:00-04:00,SHOP,150.565,148.26,1.55,1.26,SKIP,rules,,max open positions reached,,1.96
+0,bt-20261002-095549,backtest,2026-09-30T09:50:00-04:00,CIEN,347.33,354.92,-2.14,1.92,SKIP,rules,,max open positions reached,,4.1
+0,bt-20261002-095549,backtest,2026-09-30T10:00:00-04:00,GEN,21.44,20.85,2.83,3.66,BUY,rules,,trigger met,,10.35
+0,bt-20261002-095549,backtest,2026-09-30T10:00:00-04:00,CBOE,272.48,261.75,4.1,2.41,SKIP,rules,,max open positions reached,,9.87
+0,bt-20261002-095549,backtest,2026-09-30T10:00:00-04:00,NCLH,15.045,14.8,1.66,3.87,SKIP,rules,,max open positions reached,,6.41
+0,bt-20261002-095549,backtest,2026-09-30T10:05:00-04:00,FICO,603.73,617.87,-2.29,7.94,SKIP,rules,,max open positions reached,,18.17
+0,bt-20261002-095549,backtest,2026-09-30T10:05:00-04:00,MRNA,190.8899,203.46,-6.18,2.61,SKIP,rules,,max open positions reached,,16.12
+0,bt-20261002-095549,backtest,2026-09-30T10:05:00-04:00,GLW,154.042,158.71,-2.94,1.42,SKIP,rules,,max open positions reached,,4.19
+0,bt-20261002-095549,backtest,2026-09-30T10:10:00-04:00,W,105.22,101.95,3.21,1.41,SKIP,rules,,max open positions reached,,4.53
+0,bt-20261002-095549,backtest,2026-09-30T10:10:00-04:00,AKAM,110.84,108.45,2.2,1.72,SKIP,rules,,max open positions reached,,3.8
+0,bt-20261002-095549,backtest,2026-09-30T10:10:00-04:00,RBLX,42.39,41.18,2.94,1.27,SKIP,rules,,max open positions reached,,3.72
+0,bt-20261002-095549,backtest,2026-09-30T10:10:00-04:00,COHR,286.285,292.21,-2.03,1.37,SKIP,rules,,max open positions reached,,2.77
+0,bt-20261002-095549,backtest,2026-09-30T10:10:00-04:00,META,726.865,738.79,-1.61,1.68,SKIP,rules,,max open positions reached,,2.72
+0,bt-20261002-095549,backtest,2026-09-30T10:15:00-04:00,RCL,268.41,260.67,2.97,2.51,SKIP,rules,,max open positions reached,,7.46
+0,bt-20261002-095549,backtest,2026-09-30T10:15:00-04:00,FDS,264.75,259.97,1.84,2.87,SKIP,rules,,max open positions reached,,5.28
+0,bt-20261002-095549,backtest,2026-09-30T10:15:00-04:00,CAVA,54.505,53.14,2.57,1.43,SKIP,rules,,max open positions reached,,3.66
+0,bt-20261002-095549,backtest,2026-09-30T10:20:00-04:00,CIEN,348.24,354.92,-1.88,1.73,SKIP,rules,,max open positions reached,,3.25
+0,bt-20261002-095549,backtest,2026-09-30T10:20:00-04:00,LITE,957.21,973.49,-1.67,1.85,SKIP,rules,,max open positions reached,,3.09
+0,bt-20261002-095549,backtest,2026-09-30T10:25:00-04:00,BE,286.795,291.25,-1.53,1.46,SKIP,rules,,max open positions reached,,2.24
+0,bt-20261002-095549,backtest,2026-09-30T10:25:00-04:00,ARM,288.97,293.67,-1.6,1.29,SKIP,rules,,max open positions reached,,2.06
+0,bt-20261002-095549,backtest,2026-09-30T10:30:00-04:00,CBOE,274.72,261.75,4.96,2.0,SKIP,rules,,max open positions reached,,9.92
+0,bt-20261002-095549,backtest,2026-09-30T10:35:00-04:00,FICO,607.14,617.87,-1.74,6.04,SKIP,rules,,max open positions reached,,10.5
+0,bt-20261002-095549,backtest,2026-09-30T10:35:00-04:00,MRNA,192.565,203.46,-5.35,1.7,SKIP,rules,,max open positions reached,,9.11
+0,bt-20261002-095549,backtest,2026-09-30T10:40:00-04:00,AKAM,111.37,108.45,2.69,1.87,SKIP,rules,,max open positions reached,,5.03
+0,bt-20261002-095549,backtest,2026-09-30T10:40:00-04:00,W,104.82,101.95,2.82,1.3,SKIP,rules,,max open positions reached,,3.67
+0,bt-20261002-095549,backtest,2026-09-30T10:40:00-04:00,COHR,284.66,292.21,-2.58,1.3,SKIP,rules,,max open positions reached,,3.36
+0,bt-20261002-095549,backtest,2026-09-30T10:40:00-04:00,META,727.32,738.79,-1.55,1.3,SKIP,rules,,max open positions reached,,2.01
+0,bt-20261002-095549,backtest,2026-09-30T10:45:00-04:00,FDS,267.74,259.97,2.99,3.34,SKIP,rules,,max open positions reached,,9.99
+0,bt-20261002-095549,backtest,2026-09-30T10:45:00-04:00,RCL,267.71,260.67,2.7,2.17,SKIP,rules,,max open positions reached,,5.85
+0,bt-20261002-095549,backtest,2026-09-30T10:45:00-04:00,CAVA,54.245,53.14,2.08,1.33,SKIP,rules,,max open positions reached,,2.77
+0,bt-20261002-095549,backtest,2026-09-30T10:50:00-04:00,CIEN,344.4,354.92,-2.96,1.6,SKIP,rules,,max open positions reached,,4.73
+0,bt-20261002-095549,backtest,2026-09-30T10:50:00-04:00,LITE,950.46,973.49,-2.37,1.58,SKIP,rules,,max open positions reached,,3.74
+0,bt-20261002-095549,backtest,2026-09-30T10:55:00-04:00,BE,281.535,291.25,-3.34,1.42,SKIP,rules,,max open positions reached,,4.73
+0,bt-20261002-095549,backtest,2026-09-30T10:55:00-04:00,ARM,286.575,293.67,-2.42,1.39,SKIP,rules,,max open positions reached,,3.36
+0,bt-20261002-095549,backtest,2026-09-30T10:55:00-04:00,TWLO,295.685,290.78,1.69,1.31,SKIP,rules,,max open positions reached,,2.21
+0,bt-20261002-095549,backtest,2026-09-30T11:00:00-04:00,CBOE,273.84,261.75,4.62,1.72,SKIP,rules,,max open positions reached,,7.95
+0,bt-20261002-095549,backtest,2026-09-30T11:05:00-04:00,MRNA,187.85,203.46,-7.67,1.36,SKIP,rules,,max open positions reached,,10.4
+0,bt-20261002-095549,backtest,2026-09-30T11:10:00-04:00,FICO,608.2,617.87,-1.57,4.89,SKIP,rules,,max open positions reached,,7.66
+0,bt-20261002-095549,backtest,2026-09-30T11:10:00-04:00,AKAM,111.48,108.45,2.79,1.66,SKIP,rules,,max open positions reached,,4.63
+0,bt-20261002-095549,backtest,2026-09-30T11:10:00-04:00,COHR,283.59,292.21,-2.95,1.2,SKIP,rules,,max open positions reached,,3.54
+0,bt-20261002-095549,backtest,2026-09-30T11:15:00-04:00,FDS,268.91,259.97,3.44,2.57,SKIP,rules,,max open positions reached,,8.85
+0,bt-20261002-095549,backtest,2026-09-30T11:15:00-04:00,RCL,268.91,260.67,3.16,2.0,SKIP,rules,,max open positions reached,,6.31
+0,bt-20261002-095549,backtest,2026-09-30T11:15:00-04:00,CAVA,54.3,53.14,2.18,1.3,SKIP,rules,,max open positions reached,,2.83
+0,bt-20261002-095549,backtest,2026-09-30T11:20:00-04:00,CIEN,342.03,354.92,-3.63,1.51,SKIP,rules,,max open positions reached,,5.5
+0,bt-20261002-095549,backtest,2026-09-30T11:20:00-04:00,LITE,943.27,973.49,-3.1,1.36,SKIP,rules,,max open positions reached,,4.24
+0,bt-20261002-095549,backtest,2026-09-30T11:25:00-04:00,BE,279.8699,291.25,-3.91,1.3,SKIP,rules,,max open positions reached,,5.08
+0,bt-20261002-095549,backtest,2026-09-30T11:25:00-04:00,ARM,285.475,293.67,-2.79,1.29,SKIP,rules,,max open positions reached,,3.59
+0,bt-20261002-095549,backtest,2026-09-30T11:30:00-04:00,CBOE,275.195,261.75,5.14,1.48,SKIP,rules,,max open positions reached,,7.6
+0,bt-20261002-095549,backtest,2026-09-30T11:35:00-04:00,RBLX,42.0194,41.18,2.04,1.29,SKIP,rules,,max open positions reached,,2.63
+0,bt-20261002-095549,backtest,2026-09-30T11:40:00-04:00,FICO,601.12,617.87,-2.71,4.16,SKIP,rules,,max open positions reached,,11.28
+0,bt-20261002-095549,backtest,2026-09-30T11:45:00-04:00,FDS,268.7175,259.97,3.36,2.22,SKIP,rules,,max open positions reached,,7.46
+0,bt-20261002-095549,backtest,2026-09-30T11:50:00-04:00,CIEN,344.74,354.92,-2.87,1.29,SKIP,rules,,max open positions reached,,3.7
+0,bt-20261002-095549,backtest,2026-09-30T11:50:00-04:00,LITE,945.785,973.49,-2.85,1.21,SKIP,rules,,max open positions reached,,3.44
+0,bt-20261002-095549,backtest,2026-09-30T11:55:00-04:00,RCL,267.1,260.67,2.47,1.78,SKIP,rules,,max open positions reached,,4.39
+0,bt-20261002-095549,backtest,2026-09-30T11:55:00-04:00,TWLO,296.82,290.78,2.08,1.23,SKIP,rules,,max open positions reached,,2.56
+0,bt-20261002-095549,backtest,2026-09-30T12:00:00-04:00,CBOE,277.355,261.75,5.96,1.45,SKIP,rules,,max open positions reached,,8.64
+0,bt-20261002-095549,backtest,2026-09-30T12:10:00-04:00,FICO,600.435,617.87,-2.82,3.84,SKIP,rules,,max open positions reached,,10.82
+0,bt-20261002-095549,backtest,2026-09-30T12:15:00-04:00,FDS,267.56,259.97,2.92,1.95,SKIP,rules,,max open positions reached,,5.7
+0,bt-20261002-095549,backtest,2026-09-30T12:25:00-04:00,RCL,267.17,260.67,2.49,1.59,SKIP,rules,,max open positions reached,,3.97
+0,bt-20261002-095549,backtest,2026-09-30T12:30:00-04:00,CBOE,277.03,261.75,5.84,1.45,SKIP,rules,,max open positions reached,,8.49
+0,bt-20261002-095549,backtest,2026-09-30T12:40:00-04:00,FICO,596.12,617.87,-3.52,3.55,SKIP,rules,,max open positions reached,,12.5
+0,bt-20261002-095549,backtest,2026-09-30T12:45:00-04:00,FDS,267.72,259.97,2.98,1.72,SKIP,rules,,max open positions reached,,5.13
+0,bt-20261002-095549,backtest,2026-09-30T12:55:00-04:00,RCL,267.39,260.67,2.58,1.49,SKIP,rules,,max open positions reached,,3.83
+0,bt-20261002-095549,backtest,2026-09-30T13:00:00-04:00,CBOE,276.335,261.75,5.57,1.49,SKIP,rules,,max open positions reached,,8.32
+0,bt-20261002-095549,backtest,2026-09-30T13:10:00-04:00,FICO,594.318,617.87,-3.81,3.59,SKIP,rules,,max open positions reached,,13.67
+0,bt-20261002-095549,backtest,2026-09-30T13:15:00-04:00,FDS,266.33,259.97,2.45,1.56,SKIP,rules,,max open positions reached,,3.81
+0,bt-20261002-095549,backtest,2026-09-30T13:30:00-04:00,CBOE,274.61,261.75,4.91,1.46,SKIP,rules,,max open positions reached,,7.19
+0,bt-20261002-095549,backtest,2026-09-30T13:40:00-04:00,FICO,590.09,617.87,-4.5,3.51,SKIP,rules,,max open positions reached,,15.78
+0,bt-20261002-095549,backtest,2026-09-30T13:45:00-04:00,FDS,266.88,259.97,2.66,1.44,SKIP,rules,,max open positions reached,,3.82
+0,bt-20261002-095549,backtest,2026-09-30T14:00:00-04:00,CBOE,275.11,261.75,5.1,1.37,SKIP,rules,,max open positions reached,,7.01
+0,bt-20261002-095549,backtest,2026-09-30T14:10:00-04:00,FICO,592.01,617.87,-4.19,3.53,SKIP,rules,,max open positions reached,,14.77
+0,bt-20261002-095549,backtest,2026-09-30T14:15:00-04:00,FDS,268.2,259.97,3.17,1.33,SKIP,rules,,max open positions reached,,4.22
+0,bt-20261002-095549,backtest,2026-09-30T14:35:00-04:00,RCL,267.18,260.67,2.5,1.34,SKIP,rules,,max open positions reached,,3.36
+0,bt-20261002-095549,backtest,2026-09-30T14:40:00-04:00,FICO,592.51,617.87,-4.1,3.49,SKIP,rules,,max open positions reached,,14.32
+0,bt-20261002-095549,backtest,2026-09-30T14:45:00-04:00,FDS,268.26,259.97,3.19,1.26,SKIP,rules,,max open positions reached,,4.03
+0,bt-20261002-095549,backtest,2026-09-30T15:05:00-04:00,RCL,267.19,260.67,2.5,1.29,SKIP,rules,,max open positions reached,,3.22
+0,bt-20261002-095549,backtest,2026-09-30T15:10:00-04:00,FICO,600.565,617.87,-2.8,3.45,SKIP,rules,,max open positions reached,,9.65
+0,bt-20261002-095549,backtest,2026-09-30T15:15:00-04:00,FDS,269.855,259.97,3.8,1.27,SKIP,rules,,max open positions reached,,4.83
+0,bt-20261002-095549,backtest,2026-09-30T15:35:00-04:00,RCL,266.99,260.67,2.42,1.29,SKIP,rules,,max open positions reached,,3.13
+0,bt-20261002-095549,backtest,2026-09-30T15:40:00-04:00,FICO,596.455,617.87,-3.47,3.38,SKIP,rules,,max open positions reached,,11.72
+0,bt-20261002-095549,backtest,2026-10-01T09:30:00-04:00,SNPS,473.53,434.94,8.87,24.78,SKIP,rules,,max open positions reached,,88.72
+0,bt-20261002-095549,backtest,2026-10-01T09:30:00-04:00,FICO,635.0001,592.47,7.18,37.69,SKIP,rules,,max open positions reached,,71.78
+0,bt-20261002-095549,backtest,2026-10-01T09:30:00-04:00,CEG,263.7946,254.02,3.85,8.27,SKIP,rules,,max open positions reached,,31.82
+0,bt-20261002-095549,backtest,2026-10-01T09:30:00-04:00,PSKY,10.08,10.33,-2.42,4.03,SKIP,rules,,max open positions reached,,9.75
+0,bt-20261002-095549,backtest,2026-10-01T09:30:00-04:00,PATH,13.145,12.84,2.38,1.62,SKIP,rules,,max open positions reached,,3.84
+0,bt-20261002-095549,backtest,2026-10-01T09:35:00-04:00,AI,10.795,10.99,-1.77,3.66,SKIP,rules,,max open positions reached,,6.5
+0,bt-20261002-095549,backtest,2026-10-01T09:35:00-04:00,CBOE,279.42,275.29,1.5,1.32,SKIP,rules,,max open positions reached,,1.98
+0,bt-20261002-095549,backtest,2026-10-01T09:40:00-04:00,GIS,31.66,32.16,-1.55,2.33,SKIP,rules,,max open positions reached,,3.62
+0,bt-20261002-095549,backtest,2026-10-01T09:45:00-04:00,APP,284.46,290.43,-2.06,4.09,SKIP,rules,,max open positions reached,,8.41
+0,bt-20261002-095549,backtest,2026-10-01T09:45:00-04:00,HUT,84.035,86.1,-2.4,1.69,SKIP,rules,,max open positions reached,,4.04
+0,bt-20261002-095549,backtest,2026-10-01T09:45:00-04:00,RIOT,19.76,20.15,-1.94,1.35,SKIP,rules,,max open positions reached,,2.6
+0,bt-20261002-095549,backtest,2026-10-01T09:45:00-04:00,CLSK,12.66,12.88,-1.71,1.24,SKIP,rules,,max open positions reached,,2.12
+0,bt-20261002-095549,backtest,2026-10-01T09:50:00-04:00,MKC,45.38,46.4,-2.2,5.8,SKIP,rules,,max open positions reached,,12.76
+0,bt-20261002-095549,backtest,2026-10-01T09:50:00-04:00,TWLO,297.16,292.46,1.61,1.77,SKIP,rules,,max open positions reached,,2.84
+0,bt-20261002-095549,backtest,2026-10-01T09:50:00-04:00,MRNA,196.93,192.57,2.26,1.23,SKIP,rules,,max open positions reached,,2.78
+0,bt-20261002-095549,backtest,2026-10-01T09:50:00-04:00,HPE,62.88,63.89,-1.58,1.74,SKIP,rules,,max open positions reached,,2.74
+0,bt-20261002-095549,backtest,2026-10-01T09:55:00-04:00,MDB,353.95,348.61,1.53,2.64,SKIP,rules,,max open positions reached,,4.04
+0,bt-20261002-095549,backtest,2026-10-01T09:55:00-04:00,DKNG,18.68,19.0,-1.68,1.66,SKIP,rules,,max open positions reached,,2.79
+0,bt-20261002-095549,backtest,2026-10-01T10:00:00-04:00,FICO,650.7404,592.47,9.84,12.21,SKIP,rules,,max open positions reached,,98.35
+0,bt-20261002-095549,backtest,2026-10-01T10:00:00-04:00,PSKY,9.95,10.33,-3.68,4.33,SKIP,rules,,max open positions reached,,15.93
+0,bt-20261002-095549,backtest,2026-10-01T10:00:00-04:00,INTC,118.07,120.23,-1.8,1.96,SKIP,rules,,max open positions reached,,3.52
+0,bt-20261002-095549,backtest,2026-10-01T10:05:00-04:00,AKAM,104.7,106.35,-1.55,2.37,SKIP,rules,,max open positions reached,,3.68
+0,bt-20261002-095549,backtest,2026-10-01T10:10:00-04:00,GIS,31.525,32.16,-1.97,1.91,SKIP,rules,,max open positions reached,,3.77
+0,bt-20261002-095549,backtest,2026-10-01T10:15:00-04:00,RIOT,19.045,20.15,-5.48,1.71,SKIP,rules,,max open positions reached,,9.39
+0,bt-20261002-095549,backtest,2026-10-01T10:15:00-04:00,CLSK,12.2427,12.88,-4.95,1.51,SKIP,rules,,max open positions reached,,7.48
+0,bt-20261002-095549,backtest,2026-10-01T10:15:00-04:00,HUT,82.49,86.1,-4.19,1.58,SKIP,rules,,max open positions reached,,6.61
+0,bt-20261002-095549,backtest,2026-10-01T10:15:00-04:00,APP,284.717,290.43,-1.97,2.59,SKIP,rules,,max open positions reached,,5.09
+0,bt-20261002-095549,backtest,2026-10-01T10:15:00-04:00,CBOE,279.8,275.29,1.64,1.22,SKIP,rules,,max open positions reached,,2.0
+0,bt-20261002-095549,backtest,2026-10-01T10:20:00-04:00,SNPS,484.01,434.94,11.28,8.4,SKIP,rules,,max open positions reached,,94.79
+0,bt-20261002-095549,backtest,2026-10-01T10:20:00-04:00,JBL,291.225,286.86,1.52,3.06,SKIP,rules,,max open positions reached,,4.66
+0,bt-20261002-095549,backtest,2026-10-01T10:25:00-04:00,MKC,45.54,46.4,-1.85,3.6,SKIP,rules,,max open positions reached,,6.67
+0,bt-20261002-095549,backtest,2026-10-01T10:25:00-04:00,MDB,354.225,348.61,1.61,1.9,SKIP,rules,,max open positions reached,,3.06
+0,bt-20261002-095549,backtest,2026-10-01T10:30:00-04:00,FICO,642.755,592.47,8.49,9.05,SKIP,rules,,max open positions reached,,76.81
+0,bt-20261002-095549,backtest,2026-10-01T10:30:00-04:00,PSKY,9.825,10.33,-4.89,3.27,SKIP,rules,,max open positions reached,,15.98
+0,bt-20261002-095549,backtest,2026-10-01T10:30:00-04:00,AI,10.8205,10.99,-1.54,1.49,SKIP,rules,,max open positions reached,,2.31
+0,bt-20261002-095549,backtest,2026-10-01T10:35:00-04:00,AKAM,104.385,106.35,-1.85,1.85,SKIP,rules,,max open positions reached,,3.42
+0,bt-20261002-095549,backtest,2026-10-01T10:40:00-04:00,GIS,31.455,32.16,-2.19,1.75,SKIP,rules,,max open positions reached,,3.85
+0,bt-20261002-095549,backtest,2026-10-01T10:45:00-04:00,RIOT,19.325,20.15,-4.09,1.48,SKIP,rules,,max open positions reached,,6.05
+0,bt-20261002-095549,backtest,2026-10-01T10:45:00-04:00,APP,282.35,290.43,-2.78,2.14,SKIP,rules,,max open positions reached,,5.96
+0,bt-20261002-095549,backtest,2026-10-01T10:45:00-04:00,CLSK,12.44,12.88,-3.42,1.45,SKIP,rules,,max open positions reached,,4.96
+0,bt-20261002-095549,backtest,2026-10-01T10:45:00-04:00,HUT,83.51,86.1,-3.01,1.42,SKIP,rules,,max open positions reached,,4.27
+0,bt-20261002-095549,backtest,2026-10-01T10:50:00-04:00,SNPS,481.33,434.94,10.67,6.17,SKIP,rules,,max open positions reached,,65.83
+0,bt-20261002-095549,backtest,2026-10-01T10:50:00-04:00,JBL,295.73,286.86,3.09,2.74,SKIP,rules,,max open positions reached,,8.48
+0,bt-20261002-095549,backtest,2026-10-01T10:50:00-04:00,DKNG,18.685,19.0,-1.66,1.31,SKIP,rules,,max open positions reached,,2.17
+0,bt-20261002-095549,backtest,2026-10-01T10:55:00-04:00,MKC,45.205,46.4,-2.58,3.11,SKIP,rules,,max open positions reached,,8.01
+0,bt-20261002-095549,backtest,2026-10-01T11:00:00-04:00,FICO,644.01,592.47,8.7,7.2,SKIP,rules,,max open positions reached,,62.64
+0,bt-20261002-095549,backtest,2026-10-01T11:00:00-04:00,PSKY,9.836,10.33,-4.78,2.82,SKIP,rules,,max open positions reached,,13.48
+0,bt-20261002-095549,backtest,2026-10-01T11:00:00-04:00,MDB,354.27,348.61,1.62,1.54,SKIP,rules,,max open positions reached,,2.5
+0,bt-20261002-095549,backtest,2026-10-01T11:00:00-04:00,AI,10.8,10.99,-1.73,1.28,SKIP,rules,,max open positions reached,,2.21
+0,bt-20261002-095549,backtest,2026-10-01T11:10:00-04:00,FICO,647.0,592.47,9.2,6.8,BUY,rules,,trigger met,,62.57
+0,bt-20261002-095549,backtest,2026-10-01T11:10:00-04:00,GIS,31.425,32.16,-2.29,1.62,SKIP,rules,,max open positions reached,,3.71
+0,bt-20261002-095549,backtest,2026-10-01T11:15:00-04:00,RIOT,19.045,20.15,-5.48,1.42,SKIP,rules,,max open positions reached,,7.79
+0,bt-20261002-095549,backtest,2026-10-01T11:15:00-04:00,CLSK,12.245,12.88,-4.93,1.3,SKIP,rules,,max open positions reached,,6.41
+0,bt-20261002-095549,backtest,2026-10-01T11:15:00-04:00,APP,281.605,290.43,-3.04,1.83,SKIP,rules,,max open positions reached,,5.57
+0,bt-20261002-095549,backtest,2026-10-01T11:15:00-04:00,HUT,82.5426,86.1,-4.13,1.29,SKIP,rules,,max open positions reached,,5.33
+0,bt-20261002-095549,backtest,2026-10-01T11:20:00-04:00,JBL,295.35,286.86,2.96,2.52,BUY,rules,,trigger met,,7.47
+0,bt-20261002-095549,backtest,2026-10-01T11:20:00-04:00,DKNG,18.655,19.0,-1.82,1.23,SKIP,rules,,max open positions reached,,2.24
+0,bt-20261002-095549,backtest,2026-10-01T11:25:00-04:00,MKC,44.84,46.4,-3.36,2.73,SKIP,rules,,max open positions reached,,9.17
+0,bt-20261002-095549,backtest,2026-10-01T11:30:00-04:00,PSKY,9.825,10.33,-4.89,2.47,SKIP,rules,,max open positions reached,,12.05
+0,bt-20261002-095549,backtest,2026-10-01T11:30:00-04:00,TWLO,296.95,292.46,1.54,1.22,SKIP,rules,,max open positions reached,,1.88
+0,bt-20261002-095549,backtest,2026-10-01T11:35:00-04:00,TWLO,297.97,292.46,1.88,1.23,BUY,rules,,trigger met,,2.31
+0,bt-20261002-095549,backtest,2026-10-01T11:40:00-04:00,GIS,31.375,32.16,-2.44,1.46,SKIP,rules,,max open positions reached,,3.55
+0,bt-20261002-095549,backtest,2026-10-01T11:40:00-04:00,MDB,353.895,348.61,1.52,1.23,SKIP,rules,,max open positions reached,,1.87
+0,bt-20261002-095549,backtest,2026-10-01T11:45:00-04:00,APP,277.945,290.43,-4.3,1.82,SKIP,rules,,max open positions reached,,7.83
+0,bt-20261002-095549,backtest,2026-10-01T11:45:00-04:00,RIOT,18.985,20.15,-5.78,1.3,SKIP,rules,,max open positions reached,,7.51
+0,bt-20261002-095549,backtest,2026-10-01T12:05:00-04:00,FDS,277.19,269.95,2.68,1.49,BUY,rules,,trigger met,,3.99
+0,bt-20261002-095549,backtest,2026-10-01T12:10:00-04:00,PSKY,9.595,10.33,-7.12,2.31,SKIP,rules,,max open positions reached,,16.43
+0,bt-20261002-095549,backtest,2026-10-01T12:10:00-04:00,MKC,44.775,46.4,-3.5,2.4,SKIP,rules,,max open positions reached,,8.42
+0,bt-20261002-095549,backtest,2026-10-01T12:10:00-04:00,GIS,31.335,32.16,-2.57,1.35,SKIP,rules,,max open positions reached,,3.46
+0,bt-20261002-095549,backtest,2026-10-01T12:15:00-04:00,APP,276.3669,290.43,-4.84,1.86,SKIP,rules,,max open positions reached,,8.98
+0,bt-20261002-095549,backtest,2026-10-01T12:15:00-04:00,RIOT,18.845,20.15,-6.48,1.21,SKIP,rules,,max open positions reached,,7.81
+0,bt-20261002-095549,backtest,2026-10-01T12:40:00-04:00,SNPS,480.165,434.94,10.4,3.48,BUY,rules,,trigger met,,36.2
+0,bt-20261002-095549,backtest,2026-10-01T12:40:00-04:00,PSKY,9.525,10.33,-7.79,2.24,SKIP,rules,,max open positions reached,,17.42
+0,bt-20261002-095549,backtest,2026-10-01T12:40:00-04:00,MKC,45.09,46.4,-2.82,2.26,SKIP,rules,,max open positions reached,,6.38
+0,bt-20261002-095549,backtest,2026-10-01T12:40:00-04:00,GIS,31.325,32.16,-2.6,1.31,SKIP,rules,,max open positions reached,,3.41
+0,bt-20261002-095549,backtest,2026-10-01T12:45:00-04:00,APP,277.4895,290.43,-4.46,1.79,SKIP,rules,,max open positions reached,,7.96
