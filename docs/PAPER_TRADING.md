@@ -19,10 +19,10 @@ entirely from GitHub — no computer left running, no Robinhood account needed.
 
 1. **Merge this branch into `main`.** GitHub only runs scheduled workflows from
    the default branch.
-2. **Turn on GitHub Pages:** repo → Settings → Pages → Source: **GitHub Actions**.
-   The *Deploy dashboard site* workflow publishes `site/` to
-   `https://<you>.github.io/robinhood-trade/`. (Re-run it from the Actions tab
-   if it ran before Pages was enabled.)
+2. **GitHub Pages:** the *Deploy dashboard site* workflow publishes `site/` to
+   the `gh-pages` branch, served at `https://<you>.github.io/robinhood-trade/`.
+   If the page doesn't appear, set repo → Settings → Pages → *Deploy from a
+   branch* → `gh-pages` / root.
 3. Open the site → **Setup**:
    1. Paste a fine-grained GitHub token (this repo only; Contents, Secrets and
       Actions: read & write). It stays in your browser.
