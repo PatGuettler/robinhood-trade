@@ -1,0 +1,133 @@
+{
+  "generated_at": "2026-10-02T08:26:12.858961-04:00",
+  "account_id": 1,
+  "overall": "pass",
+  "checks": [
+    {
+      "name": "cash_ledger",
+      "title": "Live: cash ledger adds up",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "Starting $10,000.00 \u2192 ledger cash $10,000.00",
+      "failures": []
+    },
+    {
+      "name": "realized_pnl",
+      "title": "Live: realized P&L recomputes",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "fill_rules",
+      "title": "Live: every fill obeys the fill rules for its bar",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "no_lookahead",
+      "title": "Live: buys fill on the bar after their signal",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "equity_math",
+      "title": "Live: equity = cash + positions on every snapshot",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "state_matches",
+      "title": "Live: saved state matches the ledger",
+      "status": "skip",
+      "checked": 0,
+      "failed": 0,
+      "detail": "no live state yet",
+      "failures": []
+    },
+    {
+      "name": "independent_prices",
+      "title": "Live: fill prices match an independent data source",
+      "status": "pass",
+      "checked": 0,
+      "failed": 0,
+      "detail": "0 fills checked against an independent daily source",
+      "failures": []
+    },
+    {
+      "name": "replay",
+      "title": "Live: replaying the same period from scratch reproduces the same trades",
+      "status": "skip",
+      "checked": 0,
+      "failed": 0,
+      "detail": "no live bars processed yet",
+      "failures": []
+    },
+    {
+      "name": "cash_ledger",
+      "title": "Backtest bt-20261002-082504: cash ledger adds up",
+      "status": "pass",
+      "checked": 10,
+      "failed": 0,
+      "detail": "Starting $10,000.00 \u2192 ledger cash $8,016.99",
+      "failures": []
+    },
+    {
+      "name": "realized_pnl",
+      "title": "Backtest bt-20261002-082504: realized P&L recomputes",
+      "status": "pass",
+      "checked": 4,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "fill_rules",
+      "title": "Backtest bt-20261002-082504: every fill obeys the fill rules for its bar",
+      "status": "pass",
+      "checked": 10,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "no_lookahead",
+      "title": "Backtest bt-20261002-082504: buys fill on the bar after their signal",
+      "status": "pass",
+      "checked": 6,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "equity_math",
+      "title": "Backtest bt-20261002-082504: equity = cash + positions on every snapshot",
+      "status": "pass",
+      "checked": 390,
+      "failed": 0,
+      "detail": "",
+      "failures": []
+    },
+    {
+      "name": "independent_prices",
+      "title": "Backtest bt-20261002-082504: fill prices match an independent data source",
+      "status": "pass",
+      "checked": 10,
+      "failed": 0,
+      "detail": "10 fills checked against an independent daily source",
+      "failures": []
+    }
+  ]
+}
