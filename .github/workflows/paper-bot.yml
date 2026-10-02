@@ -56,12 +56,17 @@ jobs:
 
       - name: Choose command
         id: cmd
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_COMMAND: ${{ inputs.command }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            if [ "${{ github.event.schedule }}" = "40 21 * * 1-5" ]; then cmd=verify; else cmd=live; fi
+          if [ "$EVENT" = "schedule" ]; then
+            if [ "$SCHEDULE" = "40 21 * * 1-5" ]; then cmd=verify; else cmd=live; fi
           else
-            cmd="${{ inputs.command }}"
+            cmd="$INPUT_COMMAND"
           fi
+          case "$cmd" in live|backtest|verify) ;; *) echo "unknown command"; exit 1 ;; esac
           backend=$(python -c "from paper import config; print(config.load()['storage']['backend'])")
           echo "command=$cmd" >> "$GITHUB_OUTPUT"
           echo "backend=$backend" >> "$GITHUB_OUTPUT"

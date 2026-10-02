@@ -8,7 +8,7 @@ emails you for approval, then places trades automatically via Robinhood's Agenti
 > against real prices. It runs on GitHub Actions, saves results to Google Drive
 > (or a repo branch), and comes with a GitHub Pages dashboard for setup, results
 > and accuracy checks. No machine or Robinhood account needed. See
-> [docs/PAPER_TRADING.md](docs/PAPER_TRADING.md).
+> [docs/PAPER_TRADING.md](docs/PAPER_TRADING.md). Security notes: [docs/SECURITY.md](docs/SECURITY.md).
 
 ---
 

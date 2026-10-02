@@ -9,7 +9,7 @@
 
 import {
   nav, getSettings, saveSettings, gh, repoPath, loadConfig, writeRepoFile, readRepoFile, setSecret,
-  listSecretNames, dispatch, recentRuns, driveAccessToken, toast, esc, fmtTime, DRIVE_SCOPE, WORKFLOW,
+  listSecretNames, dispatch, recentRuns, driveAccessToken, toast, esc, safeUrl, fmtTime, DRIVE_SCOPE, WORKFLOW,
 } from "./core.js";
 
 nav("setup.html");
@@ -98,7 +98,7 @@ async function refreshStatus() {
         ok(!missing.length, `Secrets saved: ${[...secrets].map(esc).join(", ") || "none"}`, `Missing: ${missing.join(", ")}`);
       } catch (e) { ok(false, "Could not list secrets", esc(e.message)); }
       const runs = await recentRuns(1).catch(() => []);
-      if (runs[0]) ok(runs[0].conclusion !== "failure", `Last bot run: <a href="${runs[0].html_url}" target="_blank" rel="noopener">${esc(runs[0].conclusion || runs[0].status)}</a> · ${esc(fmtTime(runs[0].created_at))}`, "Open the run to see the error.");
+      if (runs[0]) ok(runs[0].conclusion !== "failure", `Last bot run: <a href="${safeUrl(runs[0].html_url)}" target="_blank" rel="noopener">${esc(runs[0].conclusion || runs[0].status)}</a> · ${esc(fmtTime(runs[0].created_at))}`, "Open the run to see the error.");
     } else {
       ok(false, "No GitHub token saved", "Add a token in step 1 to save settings and start runs from this page.");
     }
@@ -119,7 +119,7 @@ async function refreshRuns() {
     $("runs").innerHTML = runs.length ? `<div class="table-wrap"><table><thead><tr><th>Started</th><th>Trigger</th><th>Status</th><th></th></tr></thead><tbody>${
       runs.map(r => `<tr><td>${esc(fmtTime(r.created_at))}</td><td>${esc(r.event)}${r.display_title ? ` · ${esc(r.display_title)}` : ""}</td>
         <td><span class="badge ${r.conclusion === "success" ? "green" : r.conclusion === "failure" ? "red" : "yellow"}">${esc(r.conclusion || r.status)}</span></td>
-        <td><a href="${r.html_url}" target="_blank" rel="noopener">logs</a></td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">No runs yet.</p>`;
+        <td><a href="${safeUrl(r.html_url)}" target="_blank" rel="noopener">logs</a></td></tr>`).join("")}</tbody></table></div>` : `<p class="empty">No runs yet.</p>`;
     return runs;
   } catch (e) { $("runs").innerHTML = `<p class="empty">${esc(e.message)}</p>`; return []; }
 }
@@ -139,6 +139,7 @@ function pollRuns() {
 async function init() {
   const s = getSettings();
   $("gh-owner").value = s.owner; $("gh-repo").value = s.repo; $("gh-token").value = s.token;
+  $("gh-remember").checked = s.remember;
   $("origin").value = location.origin;
   $("redirect").value = location.origin + location.pathname;
   $("gh-badge").innerHTML = s.token ? `<span class="badge green">token saved</span>` : `<span class="badge gray">no token</span>`;
@@ -151,7 +152,8 @@ async function init() {
 // ── events ──────────────────────────────────────────────────────────────────
 
 $("gh-save").addEventListener("click", async () => {
-  saveSettings({ owner: $("gh-owner").value.trim(), repo: $("gh-repo").value.trim(), token: $("gh-token").value.trim() });
+  saveSettings({ owner: $("gh-owner").value.trim(), repo: $("gh-repo").value.trim(),
+                 token: $("gh-token").value.trim(), remember: $("gh-remember").checked });
   try {
     if ($("gh-token").value.trim()) {
       await gh(`${repoPath()}/actions/secrets/public-key`);
@@ -161,7 +163,10 @@ $("gh-save").addEventListener("click", async () => {
   } catch (e) { toast(`Token problem: ${e.message}`, "err"); }
   init();
 });
-$("gh-forget").addEventListener("click", () => { const s = getSettings(); saveSettings({ ...s, token: "" }); $("gh-token").value = ""; init(); });
+$("gh-forget").addEventListener("click", () => {
+  const s = getSettings(); saveSettings({ ...s, token: "", remember: false }); $("gh-token").value = ""; init();
+});
+form.addEventListener("submit", (e) => e.preventDefault());
 $("recheck").addEventListener("click", refreshStatus);
 $("g-folder").addEventListener("input", folderLink);
 form.querySelectorAll("input[name=backend]").forEach(r => r.addEventListener("change", driveVisibility));

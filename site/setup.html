@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://accounts.google.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://www.googleapis.com https://oauth2.googleapis.com https://cdn.jsdelivr.net https://accounts.google.com; frame-src https://accounts.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
   <title>TradeBot Paper Setup</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -29,15 +31,18 @@
       <div class="field">
         <label for="gh-token">Fine-grained personal access token</label>
         <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off">
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="gh-remember">
+          <span>Remember on this device. Leave unticked on shared computers; the token is then forgotten when you close the tab.</span></label>
         <div class="hint">Create one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
           → <i>Only select repositories</i>: this repo → Repository permissions: <b>Contents</b> read &amp; write, <b>Secrets</b> read &amp; write,
-          <b>Actions</b> read &amp; write. Viewing the dashboard of a public repo needs no token.</div>
+          <b>Actions</b> read &amp; write. Set an expiration (30–90 days). Viewing the dashboard of a public repo needs no token.
+          <br>Anyone with this token can change your repo's code and run its workflows, so never share it.</div>
       </div>
       <button class="btn primary" id="gh-save">Save &amp; test</button>
       <button class="btn" id="gh-forget">Forget token</button>
     </div>
 
-    <form id="cfg-form" onsubmit="return false">
+    <form id="cfg-form">
     <!-- 2. Account -->
     <div class="card">
       <div class="card-head"><h2>2 · Paper money</h2><span class="muted" id="acct-id"></span></div>

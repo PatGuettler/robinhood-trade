@@ -5,6 +5,10 @@ on:
     paths: ["paper/**", "tests/**", "requirements-paper.txt", ".github/workflows/tests.yml"]
   pull_request:
 
+# Read-only: pull requests from forks run this with no secrets and no write access.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

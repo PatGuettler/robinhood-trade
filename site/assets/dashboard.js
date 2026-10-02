@@ -1,6 +1,6 @@
 import {
   nav, loadConfig, loadFiles, parseCSV, sourceLabel, num, usd, pct, tone, esc, fmtTime, etDate,
-  chartUrl, roundtrips, table, lineChart, barChart, getSettings,
+  chartUrl, roundtrips, table, lineChart, barChart, getSettings, DEV_QS,
 } from "./core.js";
 
 nav("index.html");
@@ -17,7 +17,7 @@ async function load() {
   try {
     const s = getSettings();
     cfg = await loadConfig();
-    if (!s.owner && !location.search.includes("data=")) throw new Error("Repository not set.");
+    if (!s.owner && !DEV_QS) throw new Error("Repository not set.");
     const files = await loadFiles(cfg, FILES);
     raw = {
       state: files["state.json"] ? JSON.parse(files["state.json"]) : null,
@@ -27,7 +27,7 @@ async function load() {
     render();
   } catch (e) {
     $("sub").textContent = "";
-    $("notices").innerHTML = `<div class="notice err">${esc(e.message)} — check the <a href="setup.html${location.search}">Setup page</a>.</div>`;
+    $("notices").innerHTML = `<div class="notice err">${esc(e.message)} — check the <a href="setup.html${esc(DEV_QS)}">Setup page</a>.</div>`;
   }
 }
 
@@ -186,7 +186,7 @@ function notices(d) {
   if (d.live) {
     const runs = raw.runs.filter(r => r.mode === "live");
     const lastRun = runs[runs.length - 1];
-    if (!lastRun) out.push(`<div class="notice warn">The live paper bot hasn't run yet. Merge this branch to <code>main</code> so the schedule starts, or use <a href="setup.html${location.search}">Setup → Run now</a>.</div>`);
+    if (!lastRun) out.push(`<div class="notice warn">The live paper bot hasn't run yet. Merge this branch to <code>main</code> so the schedule starts, or use <a href="setup.html${esc(DEV_QS)}">Setup → Run now</a>.</div>`);
     else if (lastRun.status !== "ok") out.push(`<div class="notice err">Last bot run failed: ${esc(lastRun.message)}</div>`);
     const hrs = lastRun ? (Date.now() - new Date(lastRun.finished_at)) / 36e5 : 0;
     const wd = new Date().getDay();
@@ -222,7 +222,7 @@ function renderTrades(d, trips) {
     { label: "Sell price", num: 1, get: r => (r.closed ? usd(r.exit_price) : "—") },
     { label: "Why sold", get: r => r.exit_reason || "" },
     { label: "P&L", num: 1, html: r => (r.closed ? `<span class="${tone(r.pnl)}">${usd(r.pnl, true)} (${pct(r.pnl_pct)})</span>` : "—") },
-    { label: "", html: r => `<a href="verify.html${location.search}#scope=${encodeURIComponent(scope)}&trade=${encodeURIComponent(r.trade_id)}">check</a> · <a href="${chartUrl(r.ticker)}" target="_blank" rel="noopener">chart</a>` },
+    { label: "", html: r => `<a href="verify.html${esc(DEV_QS)}#scope=${encodeURIComponent(scope)}&trade=${encodeURIComponent(r.trade_id)}">check</a> · <a href="${chartUrl(r.ticker)}" target="_blank" rel="noopener">chart</a>` },
   ], rows, "No trades yet.");
 }
 

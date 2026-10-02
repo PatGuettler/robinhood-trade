@@ -1,6 +1,6 @@
 import {
   nav, loadConfig, loadFiles, parseCSV, num, usd, esc, fmtTime, chartUrl, roundtrips, table,
-  getSettings, dispatch, toast,
+  getSettings, DEV_QS, dispatch, toast,
 } from "./core.js";
 
 nav("verify.html");
@@ -29,7 +29,7 @@ async function load() {
     renderReport();
     render();
   } catch (e) {
-    $("notices").innerHTML = `<div class="notice err">${esc(e.message)} — check the <a href="setup.html${location.search}">Setup page</a>.</div>`;
+    $("notices").innerHTML = `<div class="notice err">${esc(e.message)} — check the <a href="setup.html${esc(DEV_QS)}">Setup page</a>.</div>`;
   }
 }
 
@@ -44,7 +44,7 @@ function renderReport() {
   $("checks").innerHTML = r.checks.map(c => {
     const [ic, cls] = ICON[c.status] || ["?", ""];
     return `<div class="check-row"><div class="icon ${cls}">${ic}</div><div>
-      <div><b>${esc(c.title)}</b> <span class="muted">· ${c.checked} checked${c.failed ? ` · ${c.failed} problem${c.failed > 1 ? "s" : ""}` : ""}</span></div>
+      <div><b>${esc(c.title)}</b> <span class="muted">· ${Number(c.checked) || 0} checked${c.failed ? ` · ${Number(c.failed) || 0} problem${c.failed > 1 ? "s" : ""}` : ""}</span></div>
       ${c.detail ? `<div class="muted">${esc(c.detail)}</div>` : ""}
       ${c.failures?.length ? `<details><summary>Show problems</summary><ul>${c.failures.map(f => `<li><code>${esc(f)}</code></li>`).join("")}</ul></details>` : ""}
     </div></div>`;
