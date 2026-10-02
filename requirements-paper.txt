@@ -1,0 +1,4 @@
+# Dependencies for paper-trading mode (python -m paper ...), used by GitHub Actions
+requests>=2.31.0
+tzdata>=2024.1
+anthropic>=1.0

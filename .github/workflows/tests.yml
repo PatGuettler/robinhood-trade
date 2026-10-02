@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    paths: ["paper/**", "tests/**", "requirements-paper.txt", ".github/workflows/tests.yml"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-paper.txt pytest
+      - run: python -m pytest -q tests
+      - name: End-to-end synthetic run (backtest, live ticks, verify)
+        run: |
+          python -m paper backtest --synthetic --data-dir /tmp/pd --days 5 --now 2026-10-02T17:00:00-04:00
+          for t in 2026-09-30T10:00 2026-09-30T16:20 2026-10-01T16:30 2026-10-02T13:00; do
+            python -m paper live --synthetic --data-dir /tmp/pd --now ${t}:00-04:00
+          done
+          python -m paper verify --synthetic --data-dir /tmp/pd
+          python -c "import json,sys; r=json.load(open('/tmp/pd/verify_report.json')); print(r['overall']); sys.exit(r['overall']=='fail')"

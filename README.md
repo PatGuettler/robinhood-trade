@@ -4,6 +4,12 @@ An AI-assisted day trading bot that runs locally on your Windows, Mac, or Linux 
 It watches a stock watchlist in real time, uses Claude AI to analyze opportunities,
 emails you for approval, then places trades automatically via Robinhood's Agentic Trading MCP.
 
+> **New: paper trading from GitHub.** Try the strategy with pretend money
+> against real prices. It runs on GitHub Actions, saves results to Google Drive
+> (or a repo branch), and comes with a GitHub Pages dashboard for setup, results
+> and accuracy checks. No machine or Robinhood account needed. See
+> [docs/PAPER_TRADING.md](docs/PAPER_TRADING.md).
+
 ---
 
 ## How It Works — High Level Overview

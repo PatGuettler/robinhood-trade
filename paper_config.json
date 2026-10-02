@@ -1,0 +1,41 @@
+{
+  "account": {
+    "id": 1,
+    "starting_cash": 10000
+  },
+  "strategy": {
+    "watchlist": ["AAPL", "AMD", "AMZN", "META", "MSFT", "NVDA", "QQQ", "SPY", "TSLA"],
+    "position_size": 1000,
+    "max_open_positions": 5,
+    "min_change_pct": 1.5,
+    "min_volume_multiplier": 1.2,
+    "volume_mode": "prorated",
+    "direction": "up",
+    "sell_mode": "dollar",
+    "profit_target": 2.0,
+    "sell_percent": 2.0,
+    "stop_loss_pct": 0,
+    "close_at_eod": false,
+    "max_hold_days": 0,
+    "one_entry_per_ticker_per_day": true,
+    "entry_start": "09:30",
+    "last_entry_time": "15:45",
+    "use_claude": false,
+    "claude_model": "claude-opus-5-5",
+    "claude_max_calls_per_run": 20,
+    "strategy_text": "momentum breakout on high volume with a clear catalyst"
+  },
+  "execution": {
+    "slippage_bps": 5,
+    "fee_per_trade": 0
+  },
+  "market_data": {
+    "provider": "yahoo",
+    "interval_minutes": 5
+  },
+  "storage": {
+    "backend": "github",
+    "drive_folder_id": "",
+    "google_client_id": ""
+  }
+}
