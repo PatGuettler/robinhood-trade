@@ -7,11 +7,12 @@ All routes require session unlock (master password) except /setup and /unlock.
 import os
 import sys
 import json
+import secrets
 import threading
 import webbrowser
 from datetime import datetime
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, abort, render_template, request, jsonify, session, redirect, url_for
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -30,25 +31,65 @@ from bot.robinhood import (
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)   # ephemeral session key
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Strict",   # other websites can't make requests with your session
+)
+
+ALLOWED_HOSTS = {"127.0.0.1", "localhost"}
+
+
+@app.before_request
+def _local_only():
+    # Blocks DNS-rebinding attacks: a malicious site pointing its own domain at 127.0.0.1.
+    if request.host.rsplit(":", 1)[0] not in ALLOWED_HOSTS:
+        abort(403)
 
 
 # ── Auth helpers ──────────────────────────────────────────────────────────────
+# The decrypted config and master password live only in this process's memory.
+# The browser cookie holds nothing but a random session id (Flask's default
+# cookie session is signed, not encrypted, so secrets must never go in it).
+
+_SESSIONS: dict[str, dict] = {}
+
+
+def _sess() -> dict | None:
+    sid = session.get("sid")
+    return _SESSIONS.get(sid) if sid else None
+
+
+def _login(password: str | None, config: dict, demo: bool = False):
+    old = session.get("sid")
+    if old:
+        _SESSIONS.pop(old, None)
+    session.clear()
+    sid = secrets.token_urlsafe(32)
+    _SESSIONS[sid] = {"password": password, "config": config, "demo": demo}
+    session["sid"] = sid
+
 
 def _unlocked() -> bool:
-    return session.get("unlocked") is True
+    return _sess() is not None
+
+
+def _can_change_config() -> bool:
+    """Demo sessions started from the lock screen never know the master password."""
+    s = _sess()
+    return bool(s and s["password"] and not s["demo"])
+
 
 def _cfg() -> dict:
-    return session.get("config", {})
+    s = _sess()
+    return s["config"] if s else {}
 
 
 # ── Page routes ───────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
-    if not config_store.is_configured():
-        return redirect(url_for("setup"))
     if not _unlocked():
-        return redirect(url_for("unlock"))
+        return redirect(url_for("unlock" if config_store.is_configured() else "setup"))
     return render_template("dashboard.html", meta=config_store.get_meta(), bot=bot_state)
 
 
@@ -78,9 +119,7 @@ def setup():
         if pw != pw2:
             return render_template("setup.html", error="Passwords do not match.")
         config_store.save_config({}, pw)
-        session["unlocked"] = True
-        session["password"] = pw
-        session["config"]   = {}
+        _login(pw, {})
         return redirect(url_for("configure"))
     return render_template("setup.html")
 
@@ -92,9 +131,7 @@ def unlock():
         cfg = config_store.load_config(pw)
         if cfg is None:
             return render_template("unlock.html", error="Incorrect password.")
-        session["unlocked"] = True
-        session["password"] = pw
-        session["config"]   = cfg
+        _login(pw, cfg)
         # Start Robinhood background sync if token is present
         token = cfg.get("robinhood_mcp_token", "")
         if token:
@@ -110,6 +147,7 @@ def unlock():
 @app.route("/logout")
 def logout():
     rh_stop()
+    _SESSIONS.pop(session.get("sid"), None)
     session.clear()
     return redirect(url_for("unlock"))
 
@@ -118,17 +156,16 @@ def logout():
 
 @app.route("/api/save_section", methods=["POST"])
 def save_section():
-    if not _unlocked():
-        return jsonify({"ok": False}), 401
+    if not _can_change_config():
+        return jsonify({"ok": False, "error": "Unlock with your master password to change settings."}), 401
     data    = request.get_json()
     section = data.get("section", "")
     values  = data.get("values", {})
-    cfg     = session.get("config", {})
+    cfg     = _cfg()
     cfg.update(values)
     if section == "robinhood":
         cfg["robinhood_configured"] = True
-    session["config"] = cfg
-    config_store.save_config(cfg, session["password"])
+    config_store.save_config(cfg, _sess()["password"])
     # Restart RH sync if token was just saved
     if section == "robinhood" and cfg.get("robinhood_mcp_token"):
         rh_stop()
@@ -189,11 +226,12 @@ def test_email():
 
 @app.route("/api/reset", methods=["POST"])
 def reset_config():
-    if not _unlocked():
-        return jsonify({"ok": False}), 401
+    if not _can_change_config():
+        return jsonify({"ok": False, "error": "Unlock with your master password first."}), 401
     stop_bot()
     rh_stop()
     config_store.delete_config()
+    _SESSIONS.pop(session.get("sid"), None)
     session.clear()
     return jsonify({"ok": True})
 
@@ -210,24 +248,11 @@ def bot_start():
 
 @app.route("/api/bot/demo", methods=["POST"])
 def bot_demo():
-    """
-    One-click local demo — no Claude/Gmail/Robinhood needed.
-    Creates a throwaway unlock session if the user hasn't set up yet.
-    """
-    if not config_store.is_configured():
-        # Ephemeral local demo password — user can reset later for real setup
-        pw = "demo-local-only"
-        config_store.save_config(dict(DEMO_DEFAULTS), pw)
-        session["unlocked"] = True
-        session["password"] = pw
-        session["config"] = dict(DEMO_DEFAULTS)
-    elif not _unlocked():
-        # Already configured but locked — still allow demo with session-only defaults
-        session["unlocked"] = True
-        session["password"] = session.get("password") or "demo-local-only"
-        session["config"] = {**dict(DEMO_DEFAULTS), **(session.get("config") or {})}
-        session["config"]["demo_mode"] = True
-        session["config"]["dry_run"] = True
+    """One-click local demo — no Claude/Gmail/Robinhood needed."""
+    if not _unlocked():
+        # Demo session lives in memory only: it never writes a config file and
+        # never learns (or sets) the master password, so it can't change settings.
+        _login(None, {**dict(DEMO_DEFAULTS), "demo_mode": True, "dry_run": True}, demo=True)
 
     if bot_state["running"]:
         stop_bot()

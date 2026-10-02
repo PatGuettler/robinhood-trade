@@ -19,21 +19,33 @@ function detectRepo() {
   return { owner: "", repo: "" };
 }
 
+// The GitHub token is kept in sessionStorage (cleared when the tab closes) unless the
+// user ticks "remember on this device". Note: every <user>.github.io site shares one
+// browser origin, so anything in localStorage is readable by the user's other Pages sites.
+function readStore(store) {
+  try { return JSON.parse(store.getItem(SETTINGS_KEY) || "{}"); } catch { return {}; }
+}
+
 export function getSettings() {
-  let s = {};
-  try { s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"); } catch { /* private mode */ }
-  const d = detectRepo();
-  return { owner: s.owner || d.owner, repo: s.repo || d.repo, token: s.token || "" };
+  const local = readStore(localStorage), sess = readStore(sessionStorage), d = detectRepo();
+  return { owner: local.owner || d.owner, repo: local.repo || d.repo,
+           token: sess.token || local.token || "", remember: !!local.token };
 }
 
-export function saveSettings(s) {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch { /* ignore */ }
+export function saveSettings({ owner, repo, token, remember }) {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ owner, repo, ...(remember && token ? { token } : {}) }));
+    sessionStorage.setItem(SETTINGS_KEY, JSON.stringify({ token: token || "" }));
+  } catch { /* storage blocked */ }
 }
 
+// Dev/offline only: ?data=<url prefix>&config=<url> reads files over plain HTTP.
+// Ignored on the public site so a crafted link can't feed the page someone else's data.
 const params = new URLSearchParams(location.search);
-// Dev/offline: ?data=<url prefix>&config=<url> reads files over plain HTTP.
-export const LOCAL_DATA = params.get("data");
-export const LOCAL_CONFIG = params.get("config");
+const IS_LOCAL = ["localhost", "127.0.0.1", ""].includes(location.hostname);
+export const LOCAL_DATA = IS_LOCAL ? params.get("data") : null;
+export const LOCAL_CONFIG = IS_LOCAL ? params.get("config") : null;
+export const DEV_QS = LOCAL_DATA ? location.search : "";
 
 // ── GitHub API ──────────────────────────────────────────────────────────────
 
@@ -242,6 +254,7 @@ export const fmtTime = (iso) => {
   return d.toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 };
 export const etDate = (iso) => iso ? iso.slice(0, 10) : "";
+export const safeUrl = (u) => (/^https:\/\/github\.com\//.test(String(u)) ? esc(u) : "#");
 export const chartUrl = (ticker) => `https://finance.yahoo.com/chart/${encodeURIComponent(ticker)}`;
 
 // ── Trades (independent JS implementation — the Verify page compares it to Python's) ──
@@ -263,7 +276,7 @@ export function roundtrips(fills) {
 
 export function nav(active) {
   const links = [["index.html", "Dashboard"], ["setup.html", "Setup"], ["verify.html", "Verify"]];
-  const qs = location.search;
+  const qs = esc(DEV_QS);
   document.getElementById("nav").innerHTML = `
     <a class="brand" href="index.html${qs}">Trade<span>Bot</span> <em>paper</em></a>
     ${links.map(([h, l]) => `<a class="nav-link${active === h ? " active" : ""}" href="${h}${qs}">${l}</a>`).join("")}`;
