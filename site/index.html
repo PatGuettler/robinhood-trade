@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBot Paper Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main>
+    <div class="toolbar">
+      <div>
+        <h1>Paper trading dashboard</h1>
+        <p class="subtitle" id="sub" style="margin:0">Loading…</p>
+      </div>
+      <div class="spacer"></div>
+      <select id="scope" style="width:auto;min-width:240px" aria-label="Which results to show"></select>
+      <button class="btn" id="refresh">↻ Refresh</button>
+    </div>
+
+    <div id="notices"></div>
+
+    <section class="kpis" id="kpis"></section>
+
+    <div class="card">
+      <div class="card-head"><h2>How it would have done</h2><span class="muted" id="period-note"></span></div>
+      <div id="periods"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Account value</h2><div class="spacer"></div>
+        <div class="seg" id="range">
+          <button data-n="1">1D</button><button data-n="2">2D</button><button data-n="5">1W</button><button data-n="0" class="on">All</button>
+        </div>
+      </div>
+      <div class="chart-host" id="equity-chart"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Profit / loss by day</h2><span class="muted">change in account value per session</span></div>
+      <div class="chart-host" id="daily-chart"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Open positions</h2></div>
+      <div id="positions"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Trades</h2><div class="spacer"></div>
+        <input type="text" id="filter" placeholder="Filter by ticker" style="width:160px">
+      </div>
+      <div id="trades"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Stocks traded</h2></div>
+      <div id="stocks"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Signals</h2><span class="muted">every trigger the bot saw and what it decided</span></div>
+      <div id="signals"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Bot runs</h2></div>
+      <div id="runs"></div>
+    </div>
+  </main>
+  <script type="module" src="assets/dashboard.js"></script>
+</body>
+</html>

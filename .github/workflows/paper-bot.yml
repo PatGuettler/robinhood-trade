@@ -1,0 +1,108 @@
+name: Paper trading bot
+
+on:
+  schedule:
+    # Every 15 minutes, weekdays 13:00-20:59 UTC — covers the 9:30-16:00 ET
+    # session in both EDT and EST. Runs outside market hours exit immediately.
+    - cron: "*/15 13-20 * * 1-5"
+    # Daily accuracy verification after the close.
+    - cron: "40 21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "What to run"
+        type: choice
+        options: [live, backtest, verify]
+        default: live
+      days:
+        description: "Backtest: number of trading days to replay (1 = last day, 2, 5 = one week)"
+        default: "1"
+      starting_cash:
+        description: "Backtest: starting paper cash (blank = value in paper_config.json)"
+        default: ""
+
+permissions:
+  contents: write
+
+# Never let two runs edit the paper account at the same time.
+concurrency:
+  group: paper-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+      ALPACA_API_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
+      ALPACA_API_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+      BACKTEST_DAYS: ${{ inputs.days }}
+      BACKTEST_CASH: ${{ inputs.starting_cash }}
+      PAPER_DATA_DIR: .paper-data
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-paper.txt
+
+      - run: pip install -r requirements-paper.txt
+
+      - name: Choose command
+        id: cmd
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event.schedule }}" = "40 21 * * 1-5" ]; then cmd=verify; else cmd=live; fi
+          else
+            cmd="${{ inputs.command }}"
+          fi
+          backend=$(python -c "from paper import config; print(config.load()['storage']['backend'])")
+          echo "command=$cmd" >> "$GITHUB_OUTPUT"
+          echo "backend=$backend" >> "$GITHUB_OUTPUT"
+          echo "Command: $cmd   Storage: $backend"
+
+      - name: Check out paper-data branch
+        if: steps.cmd.outputs.backend != 'drive'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads origin paper-data >/dev/null; then
+            git clone --quiet --depth 1 --branch paper-data "$url" .paper-data
+          else
+            mkdir .paper-data && cd .paper-data
+            git init --quiet -b paper-data && git remote add origin "$url"
+            echo "# Paper-trading data written by the Paper trading bot workflow" > README.md
+          fi
+
+      - name: Run paper bot
+        id: bot
+        run: |
+          set -o pipefail
+          python -m paper "${{ steps.cmd.outputs.command }}" | tee result.json
+
+      - name: Save data to paper-data branch
+        if: always() && steps.cmd.outputs.backend != 'drive'
+        run: |
+          cd .paper-data
+          git add -A
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git -c user.name="tradebot-paper" -c user.email="tradebot-paper@users.noreply.github.com" \
+            commit --quiet -m "paper: ${{ steps.cmd.outputs.command }} $(date -u +%FT%TZ)"
+          git push --quiet origin paper-data
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### Paper bot: ${{ steps.cmd.outputs.command }}"
+            echo '```json'
+            cat result.json 2>/dev/null || echo "{}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
