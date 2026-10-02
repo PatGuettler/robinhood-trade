@@ -11,6 +11,10 @@ from datetime import date, datetime, time as dtime, timedelta
 
 from paper.marketdata import ET, Bar, DailyBar, MarketData
 
+# Made-up tickers used as the "market" when scanning synthetic data.
+UNIVERSE = [f"SY{a}{b}" for a in "ABCDEF" for b in "ABCDEFGHIJ"]
+ANCHOR = date(2026, 6, 1)   # paths start here, so any date range gives the same prices
+
 
 def trading_days(start: date, end: date) -> list[date]:
     d, out = start, []
@@ -24,12 +28,12 @@ def trading_days(start: date, end: date) -> list[date]:
 def generate(symbols: list[str], start: date, end: date, seed: int = 7,
              interval_minutes: int = 5) -> MarketData:
     md = MarketData(source="synthetic", interval_minutes=interval_minutes)
-    for i, sym in enumerate(symbols):
+    for sym in symbols:
         rng = random.Random(f"{seed}-{sym}")
-        price = 50 + 40 * i + rng.random() * 50
+        price = 20 + rng.random() * 280          # depends only on the ticker, not list order
         avg_vol = 5_000_000
         daily, intraday = [], []
-        for d in trading_days(start - timedelta(days=60), end):
+        for d in trading_days(min(start - timedelta(days=60), ANCHOR), end):
             day_open = price * (1 + rng.gauss(0, 0.004))
             drift = rng.choice([0.0, 0.0, 0.0006, -0.0004, 0.0012])   # some days trend hard
             vol_mult = rng.uniform(0.7, 2.2)
@@ -45,7 +49,8 @@ def generate(symbols: list[str], start: date, end: date, seed: int = 7,
                 bars.append(Bar(t, round(o, 2), round(h, 2), round(l, 2), round(c, 2), round(v)))
                 hi, lo, vol_total, p = max(hi, h), min(lo, l), vol_total + v, c
                 t += timedelta(minutes=interval_minutes)
-            daily.append(DailyBar(d, round(day_open, 2), round(hi, 2), round(lo, 2), round(p, 2), round(vol_total)))
+            if d >= start - timedelta(days=60):
+                daily.append(DailyBar(d, round(day_open, 2), round(hi, 2), round(lo, 2), round(p, 2), round(vol_total)))
             if d >= start:
                 intraday.extend(bars)
             price = p

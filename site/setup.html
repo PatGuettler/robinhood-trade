@@ -61,7 +61,30 @@
     <!-- 3. Strategy -->
     <div class="card">
       <div class="card-head"><h2>3 · Strategy</h2><span class="muted">same rules as the live bot</span></div>
-      <div class="field"><label for="watchlist">Watchlist (comma-separated tickers)</label>
+      <div class="field"><label for="universe">Which stocks</label>
+        <select id="universe" data-path="strategy.universe">
+          <option value="market">Find them automatically (scan the market)</option>
+          <option value="watchlist">Only my watchlist</option>
+        </select>
+        <div class="hint">The scanner looks at ~500 large US stocks and ETFs. Each morning it picks the most “in play” ones using only
+          earlier days' data: liquid, volatile, and unusually active or moving the day before. During the day it also adds the
+          market's top gainers and most active stocks. Every pick and the reason for it shows on the dashboard.</div></div>
+      <div class="grid2" id="scan-fields">
+        <div class="field"><label for="scan_size">Stocks to watch per day</label>
+          <input type="number" id="scan_size" data-path="strategy.scan_size" min="5" max="150" step="5">
+          <div class="hint">With Alpaca keys (step 5) every liquid stock is watched instead.</div></div>
+        <div class="field"><label for="min_price">Minimum share price ($)</label>
+          <input type="number" id="min_price" data-path="strategy.min_price" min="1" step="1"></div>
+        <div class="field"><label for="min_adv">Minimum average daily trading ($ millions)</label>
+          <input type="number" id="min_adv" data-path="strategy.min_avg_dollar_volume" data-scale="1000000" min="1" step="5"></div>
+        <div class="field"><label for="max_change_pct">Don't chase moves bigger than (%, 0 = off)</label>
+          <input type="number" id="max_change_pct" data-path="strategy.max_change_pct" min="0" step="1"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="require_above_vwap" data-path="strategy.require_above_vwap">
+        <span>Only buy stocks holding above their volume-weighted average price for the day (VWAP), not ones fading</span></label>
+      <label class="check"><input type="checkbox" id="include_movers" data-path="strategy.include_market_movers">
+        <span>Also watch today's top gainers and most active stocks</span></label>
+      <div class="field"><label for="watchlist" id="watchlist-label">Always include (optional, comma-separated tickers)</label>
         <input type="text" id="watchlist" data-path="strategy.watchlist" data-type="list"></div>
       <div class="grid2">
         <div class="field"><label for="min_change_pct">Trigger: move vs previous close (%)</label>

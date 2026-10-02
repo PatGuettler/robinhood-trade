@@ -9,3 +9,4 @@ robinhood_cache.json
 *.log
 .DS_Store
 .paper-data/
+.cache/

@@ -217,7 +217,7 @@ def independent_price_check(fills, slippage_bps, label):
     return chk, evidence
 
 
-def replay_check(cfg, state, fills, signals, use_synthetic=False):
+def replay_check(cfg, state, fills, signals, use_synthetic=False, candidates=None):
     title = "Live: replaying the same period from scratch reproduces the same trades"
     if not state or not state.get("last_bar_ts"):
         return _check("replay", title, [], 0, skipped="no live bars processed yet")
@@ -230,7 +230,14 @@ def replay_check(cfg, state, fills, signals, use_synthetic=False):
     if not start or (last.date() - start.date()).days > 50:
         return _check("replay", title, [], 0, skipped="account older than the 5-minute data window (~60 days)")
 
+    allowed = None
     symbols = sorted(set(cfg["strategy"]["watchlist"]) | {f["ticker"] for f in fills})
+    if cfg["strategy"].get("universe", "market") == "market":
+        # Re-use the stocks the scanner picked on each day (recorded in candidates.csv).
+        from paper.scanner import allowed_by_day
+        rows = [r for r in (candidates or []) if start.date().isoformat() <= r["date"] <= last.date().isoformat()]
+        allowed = allowed_by_day(rows)
+        symbols = sorted({r["ticker"] for r in rows} | {f["ticker"] for f in fills})
     if use_synthetic:
         from paper import synthetic
         md = synthetic.generate(symbols, start.date(), last.date(),
@@ -241,7 +248,7 @@ def replay_check(cfg, state, fills, signals, use_synthetic=False):
     used_claude = any(s.get("decided_by") == "claude" for s in signals)
     fresh = new_state(state["account_id"], state["starting_cash"], start_ts=start)
     eng = Engine(cfg, fresh, md, mode="replay", run_id="replay",
-                 decider=replay_decider(signals) if used_claude else None)
+                 decider=replay_decider(signals) if used_claude else None, allowed=allowed)
     eng.run(until=last + timedelta(minutes=md.interval_minutes))
 
     def key(f):
@@ -277,7 +284,8 @@ def cmd_verify(cfg, store, args) -> dict:
     price_chk, evidence = independent_price_check(fills, slip, "Live")
     checks.append(price_chk)
     try:
-        checks.append(replay_check(cfg, state, fills, signals, use_synthetic=args.synthetic))
+        cands = [r for r in store.read_csv("candidates.csv") if r["mode"] == "live"]
+        checks.append(replay_check(cfg, state, fills, signals, use_synthetic=args.synthetic, candidates=cands))
     except Exception as e:  # noqa: BLE001
         checks.append(_check("replay", "Live: replay reproduces the same trades", [], 0,
                              skipped=f"could not replay: {e}"[:200]))

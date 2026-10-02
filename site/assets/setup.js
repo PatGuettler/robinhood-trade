@@ -29,12 +29,20 @@ function fillForm() {
     if (el.type === "checkbox") el.checked = !!v;
     else if (el.type === "radio") el.checked = (v || "github") === el.value;
     else if (el.dataset.type === "list") el.value = (v || []).join(", ");
+    else if (el.dataset.scale) el.value = v == null ? "" : Number(v) / Number(el.dataset.scale);
     else el.value = v ?? "";
   });
   $("acct-id").textContent = `live account #${cfg.account.id}`;
   $("bt-cash").value = cfg.account.starting_cash;
   folderLink();
   driveVisibility();
+  universeVisibility();
+}
+
+function universeVisibility() {
+  const scan = $("universe").value === "market";
+  $("scan-fields").style.display = scan ? "" : "none";
+  $("watchlist-label").textContent = scan ? "Always include (optional, comma-separated tickers)" : "Watchlist (comma-separated tickers)";
 }
 
 function readForm() {
@@ -44,6 +52,7 @@ function readForm() {
     if (el.type === "checkbox") v = el.checked;
     else if (el.type === "radio") { if (!el.checked) return; v = el.value; }
     else if (el.dataset.type === "list") v = el.value.split(/[\s,]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+    else if (el.dataset.scale) v = Number(el.value) * Number(el.dataset.scale);
     else if (el.type === "number" || el.dataset.type === "number") v = Number(el.value);
     else v = el.value.trim();
     setPath(out, el.dataset.path, v);
@@ -56,7 +65,7 @@ function validate(c) {
   if (!(c.account.starting_cash >= 100)) errs.push("Starting cash must be at least $100.");
   if (!(s.position_size > 0)) errs.push("Dollars per trade must be positive.");
   if (s.position_size > c.account.starting_cash) errs.push("Dollars per trade is more than the starting cash.");
-  if (!s.watchlist.length) errs.push("Add at least one ticker to the watchlist.");
+  if (s.universe === "watchlist" && !s.watchlist.length) errs.push("Add at least one ticker to the watchlist, or let the bot scan the market.");
   if (s.watchlist.some(t => !/^[A-Z.\-]{1,10}$/.test(t))) errs.push("Watchlist has an invalid ticker.");
   if (c.storage.backend === "drive" && !c.storage.drive_folder_id) errs.push("Connect Google Drive first (no folder ID yet).");
   if (s.sell_mode === "claude" && !s.use_claude) errs.push("“Let Claude pick” the target needs Claude review switched on.");
@@ -169,6 +178,7 @@ $("gh-forget").addEventListener("click", () => {
 form.addEventListener("submit", (e) => e.preventDefault());
 $("recheck").addEventListener("click", refreshStatus);
 $("g-folder").addEventListener("input", folderLink);
+$("universe").addEventListener("change", universeVisibility);
 form.querySelectorAll("input[name=backend]").forEach(r => r.addEventListener("change", driveVisibility));
 
 document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
