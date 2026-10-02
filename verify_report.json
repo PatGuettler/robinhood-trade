@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T08:26:12.858961-04:00",
+  "generated_at": "2026-10-02T08:28:13.507054-04:00",
   "account_id": 1,
   "overall": "pass",
   "checks": [
@@ -63,7 +63,7 @@
       "status": "pass",
       "checked": 0,
       "failed": 0,
-      "detail": "0 fills checked against an independent daily source",
+      "detail": "0 fills checked against a second daily price source",
       "failures": []
     },
     {
@@ -126,7 +126,7 @@
       "status": "pass",
       "checked": 10,
       "failed": 0,
-      "detail": "10 fills checked against an independent daily source",
+      "detail": "10 fills checked against a second daily price source \u2014 the independent source (Stooq) was unavailable, so this compared against the same vendor's daily data; add free Alpaca keys on Setup for a truly independent check",
       "failures": []
     }
   ]
