@@ -1,9 +1,9 @@
 scope,fill_id,trade_id,ticker,side,timestamp,price,reason,bar_low,bar_high,ref_source,ref_low,ref_high,within_ref
-live,1,1,CLSK,BUY,2026-10-02T10:00:00-04:00,13.2366,rules: trigger met,13.1901,13.455,yahoo daily (same vendor),,,
-live,2,2,MARA,BUY,2026-10-02T10:00:00-04:00,11.9959,rules: trigger met,11.9388,12.205,yahoo daily (same vendor),,,
-live,3,3,RIOT,BUY,2026-10-02T10:00:00-04:00,20.7204,rules: trigger met,20.68,21.0899,yahoo daily (same vendor),,,
-live,4,4,S,BUY,2026-10-02T10:00:00-04:00,25.6128,rules: trigger met,25.51,25.615,yahoo daily (same vendor),,,
-live,5,5,SOXL,BUY,2026-10-02T10:00:00-04:00,168.014,rules: trigger met,167.22,169.65,yahoo daily (same vendor),,,
+live,1,1,CLSK,BUY,2026-10-02T10:00:00-04:00,13.2366,rules: trigger met,13.1901,13.455,yahoo daily (same vendor),12.369999885559082,13.482000350952148,yes
+live,2,2,MARA,BUY,2026-10-02T10:00:00-04:00,11.9959,rules: trigger met,11.9388,12.205,yahoo daily (same vendor),11.050000190734863,12.239999771118164,yes
+live,3,3,RIOT,BUY,2026-10-02T10:00:00-04:00,20.7204,rules: trigger met,20.68,21.0899,yahoo daily (same vendor),19.350000381469727,21.09000015258789,yes
+live,4,4,S,BUY,2026-10-02T10:00:00-04:00,25.6128,rules: trigger met,25.51,25.615,yahoo daily (same vendor),24.920000076293945,25.75,yes
+live,5,5,SOXL,BUY,2026-10-02T10:00:00-04:00,168.014,rules: trigger met,167.22,169.65,yahoo daily (same vendor),162.39999389648438,169.75,yes
 bt-20261002-095549,1,1,ARM,BUY,2026-09-25T09:35:00-04:00,321.1755,rules: trigger met,319.15,322.6428,yahoo daily (same vendor),310.0799865722656,325.4800109863281,yes
 bt-20261002-095549,2,2,BE,BUY,2026-09-25T09:35:00-04:00,275.5627,rules: trigger met,274.76,277.71,yahoo daily (same vendor),264.0140075683594,292.7200012207031,yes
 bt-20261002-095549,3,2,BE,SELL,2026-09-25T09:35:00-04:00,277.5627,target,274.76,277.71,yahoo daily (same vendor),264.0140075683594,292.7200012207031,yes

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T20:45:00.056868-04:00",
+  "generated_at": "2026-10-05T21:55:01.304272-04:00",
   "account_id": 2,
   "overall": "warn",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 73,
+      "checked": 151,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -60,10 +60,10 @@
     {
       "name": "independent_prices",
       "title": "Live: fill prices match an independent data source",
-      "status": "skip",
-      "checked": 0,
+      "status": "pass",
+      "checked": 5,
       "failed": 0,
-      "detail": "no fills could be checked",
+      "detail": "5 fills checked against a second daily price source \u2014 the independent source (Stooq) was unavailable, so this compared against the same vendor's daily data; add free Alpaca keys on Setup for a truly independent check",
       "failures": []
     },
     {
@@ -72,7 +72,7 @@
       "status": "warn",
       "checked": 5,
       "failed": 12,
-      "detail": "Re-ran 59 tickers with freshly downloaded yahoo bars",
+      "detail": "Re-ran 82 tickers with freshly downloaded yahoo bars",
       "failures": [
         "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
         "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
