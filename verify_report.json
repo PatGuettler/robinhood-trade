@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T21:55:01.304272-04:00",
+  "generated_at": "2026-10-06T21:01:43.591526-04:00",
   "account_id": 2,
   "overall": "warn",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 151,
+      "checked": 229,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -72,7 +72,7 @@
       "status": "warn",
       "checked": 5,
       "failed": 12,
-      "detail": "Re-ran 82 tickers with freshly downloaded yahoo bars",
+      "detail": "Re-ran 116 tickers with freshly downloaded yahoo bars",
       "failures": [
         "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
         "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
