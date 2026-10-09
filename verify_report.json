@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T21:37:39.007519-04:00",
+  "generated_at": "2026-10-08T21:28:01.971688-04:00",
   "account_id": 2,
   "overall": "warn",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 308,
+      "checked": 386,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -71,8 +71,8 @@
       "title": "Live: replaying the same period from scratch reproduces the same trades",
       "status": "warn",
       "checked": 5,
-      "failed": 12,
-      "detail": "Re-ran 143 tickers with freshly downloaded yahoo bars",
+      "failed": 16,
+      "detail": "Re-ran 167 tickers with freshly downloaded yahoo bars",
       "failures": [
         "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
         "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
@@ -85,7 +85,11 @@
         "replay produced extra SELL MXL @ 2026-10-02T10:05:00-04:00",
         "replay produced extra BUY NVTS @ 2026-10-02T10:10:00-04:00",
         "replay produced extra SELL PENG @ 2026-10-02T15:30:00-04:00",
-        "replay produced extra BUY VSH @ 2026-10-02T15:35:00-04:00"
+        "replay produced extra BUY RXO @ 2026-10-02T15:35:00-04:00",
+        "replay produced extra SELL RXO @ 2026-10-05T09:30:00-04:00",
+        "replay produced extra BUY WDC @ 2026-10-05T09:35:00-04:00",
+        "replay produced extra SELL WDC @ 2026-10-05T11:15:00-04:00",
+        "replay produced extra BUY DKNG @ 2026-10-05T11:20:00-04:00"
       ]
     },
     {
