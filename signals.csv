@@ -2726,3 +2726,8 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261019-151613,live,2026-10-19T15:00:00-04:00,PLTR,195.0,186.03,4.82,1.46,SKIP,rules,,max open positions reached,,7.04
 2,live-20261019-151613,live,2026-10-19T15:00:00-04:00,MRNA,226.9586,218.01,4.1,1.5,SKIP,rules,,max open positions reached,,6.16
 2,live-20261019-151613,live,2026-10-19T15:05:00-04:00,MANE,121.3102,108.82,11.48,2.3,SKIP,rules,,max open positions reached,,26.37
+2,live-20261019-185624,live,2026-10-19T15:20:00-04:00,CIEN,347.95,332.73,4.57,1.51,SKIP,rules,,max open positions reached,,6.91
+2,live-20261019-185624,live,2026-10-19T15:20:00-04:00,STX,661.28,639.01,3.49,1.32,SKIP,rules,,max open positions reached,,4.6
+2,live-20261019-185624,live,2026-10-19T15:25:00-04:00,FLEX,87.9,90.46,-2.83,1.24,SKIP,rules,,max open positions reached,,3.5
+2,live-20261019-185624,live,2026-10-19T15:30:00-04:00,MRNA,230.2043,218.01,5.59,1.45,SKIP,rules,,max open positions reached,,8.09
+2,live-20261019-185624,live,2026-10-19T15:40:00-04:00,PLTR,194.845,186.03,4.74,1.35,SKIP,rules,,max open positions reached,,6.38
