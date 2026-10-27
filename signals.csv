@@ -3998,3 +3998,12 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261027-143934,live,2026-10-27T14:25:00-04:00,VSH,29.6,26.71,10.82,1.32,SKIP,rules,,max open positions reached,,14.33
 2,live-20261027-143934,live,2026-10-27T14:30:00-04:00,CBRS,120.0,108.37,10.73,1.64,SKIP,rules,,max open positions reached,,17.56
 2,live-20261027-143934,live,2026-10-27T14:30:00-04:00,COHR,235.1,221.5,6.14,1.83,SKIP,rules,,max open positions reached,,11.22
+2,live-20261027-184039,live,2026-10-27T14:35:00-04:00,LMT,625.0,635.2,-1.61,3.12,SKIP,rules,,max open positions reached,,5.02
+2,live-20261027-184039,live,2026-10-27T14:40:00-04:00,FLEX,83.08,76.99,7.91,1.42,SKIP,rules,,max open positions reached,,11.22
+2,live-20261027-184039,live,2026-10-27T14:50:00-04:00,FICO,696.975,708.07,-1.57,1.46,SKIP,rules,,max open positions reached,,2.29
+2,live-20261027-184039,live,2026-10-27T14:50:00-04:00,DASH,171.12,168.44,1.59,1.42,SKIP,rules,,max open positions reached,,2.26
+2,live-20261027-184039,live,2026-10-27T15:10:00-04:00,FLEX,84.34,76.99,9.55,1.54,SKIP,rules,,max open positions reached,,14.74
+2,live-20261027-184039,live,2026-10-27T15:15:00-04:00,LMT,624.52,635.2,-1.68,2.85,SKIP,rules,,max open positions reached,,4.78
+2,live-20261027-184039,live,2026-10-27T15:20:00-04:00,FICO,695.87,708.07,-1.72,1.39,SKIP,rules,,max open positions reached,,2.39
+2,live-20261027-184039,live,2026-10-27T15:25:00-04:00,EQT,55.675,54.85,1.5,2.57,SKIP,rules,,max open positions reached,,3.87
+2,live-20261027-184039,live,2026-10-27T15:40:00-04:00,FLEX,83.98,76.99,9.08,1.75,SKIP,rules,,max open positions reached,,15.85
