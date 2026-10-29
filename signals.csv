@@ -4471,3 +4471,15 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261029-145623,live,2026-10-29T14:50:00-04:00,LII,343.3801,332.64,3.23,2.7,SKIP,rules,,max open positions reached,,8.72
 2,live-20261029-145623,live,2026-10-29T14:50:00-04:00,ODFL,170.095,173.32,-1.86,1.52,SKIP,rules,,max open positions reached,,2.82
 2,live-20261029-145623,live,2026-10-29T14:50:00-04:00,XYL,89.91,88.23,1.9,1.32,SKIP,rules,,max open positions reached,,2.52
+2,live-20261029-191458,live,2026-10-29T14:55:00-04:00,FIX,1312.28,1345.77,-2.49,1.25,SKIP,rules,,max open positions reached,,3.11
+2,live-20261029-191458,live,2026-10-29T15:00:00-04:00,HONA,159.15,177.03,-10.1,1.75,SKIP,rules,,max open positions reached,,17.7
+2,live-20261029-191458,live,2026-10-29T15:00:00-04:00,ORCL,138.06,144.54,-4.48,2.39,SKIP,rules,,max open positions reached,,10.69
+2,live-20261029-191458,live,2026-10-29T15:10:00-04:00,FFIV,359.91,365.53,-1.54,2.21,SKIP,rules,,max open positions reached,,3.39
+2,live-20261029-191458,live,2026-10-29T15:20:00-04:00,PWR,636.24,606.89,4.84,2.58,SKIP,rules,,max open positions reached,,12.45
+2,live-20261029-191458,live,2026-10-29T15:20:00-04:00,CIEN,350.18,363.21,-3.59,2.84,SKIP,rules,,max open positions reached,,10.18
+2,live-20261029-191458,live,2026-10-29T15:20:00-04:00,LII,345.26,332.64,3.79,2.59,SKIP,rules,,max open positions reached,,9.81
+2,live-20261029-191458,live,2026-10-29T15:20:00-04:00,XYL,90.22,88.23,2.26,2.55,SKIP,rules,,max open positions reached,,5.74
+2,live-20261029-191458,live,2026-10-29T15:20:00-04:00,ODFL,169.705,173.32,-2.09,1.47,SKIP,rules,,max open positions reached,,3.07
+2,live-20261029-191458,live,2026-10-29T15:30:00-04:00,HONA,158.805,177.03,-10.29,1.73,SKIP,rules,,max open positions reached,,17.8
+2,live-20261029-191458,live,2026-10-29T15:30:00-04:00,ORCL,137.58,144.54,-4.82,2.26,SKIP,rules,,max open positions reached,,10.86
+2,live-20261029-191458,live,2026-10-29T15:30:00-04:00,FIX,1325.21,1345.77,-1.53,1.33,SKIP,rules,,max open positions reached,,2.03
