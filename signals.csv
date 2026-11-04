@@ -5352,3 +5352,12 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261103-150444,live,2026-11-03T14:35:00-05:00,LITE,673.965,684.4,-1.52,1.28,SKIP,rules,,max open positions reached,,1.95
 2,live-20261103-150444,live,2026-11-03T14:45:00-05:00,PTCT,68.18,60.88,11.99,1.67,SKIP,rules,,max open positions reached,,20.07
 2,live-20261103-150444,live,2026-11-03T14:55:00-05:00,DDOG,219.59,216.1,1.61,1.8,SKIP,rules,,max open positions reached,,2.9
+2,live-20261103-193525,live,2026-11-03T15:00:00-05:00,HWM,224.54,212.99,5.42,3.57,SKIP,rules,,max open positions reached,,19.35
+2,live-20261103-193525,live,2026-11-03T15:00:00-05:00,CRL,353.0525,338.54,4.29,1.4,SKIP,rules,,max open positions reached,,5.98
+2,live-20261103-193525,live,2026-11-03T15:00:00-05:00,CAVA,60.07,62.05,-3.19,1.71,SKIP,rules,,max open positions reached,,5.45
+2,live-20261103-193525,live,2026-11-03T15:10:00-05:00,LITE,673.08,684.4,-1.65,1.2,SKIP,rules,,max open positions reached,,1.99
+2,live-20261103-193525,live,2026-11-03T15:15:00-05:00,ORCL,125.545,119.22,5.31,3.1,SKIP,rules,,max open positions reached,,16.47
+2,live-20261103-193525,live,2026-11-03T15:20:00-05:00,SNOW,295.17,290.68,1.54,1.97,SKIP,rules,,max open positions reached,,3.05
+2,live-20261103-193525,live,2026-11-03T15:25:00-05:00,DDOG,220.205,216.1,1.9,1.82,SKIP,rules,,max open positions reached,,3.45
+2,live-20261103-193525,live,2026-11-03T15:30:00-05:00,CRL,351.96,338.54,3.96,1.36,SKIP,rules,,max open positions reached,,5.41
+2,live-20261103-193525,live,2026-11-03T15:30:00-05:00,CAVA,60.19,62.05,-3.0,1.62,SKIP,rules,,max open positions reached,,4.85
