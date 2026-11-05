@@ -5662,3 +5662,15 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261104-152426,live,2026-11-04T15:10:00-05:00,HWM,213.57,223.12,-4.28,2.73,SKIP,rules,,max open positions reached,,11.68
 2,live-20261104-152426,live,2026-11-04T15:15:00-05:00,SMCI,29.695,31.39,-5.4,2.21,SKIP,rules,,max open positions reached,,11.91
 2,live-20261104-152426,live,2026-11-04T15:15:00-05:00,HSIC,87.59,82.5,6.17,1.72,SKIP,rules,,max open positions reached,,10.59
+2,live-20261104-200227,live,2026-11-04T15:20:00-05:00,RBLX,49.21,45.45,8.27,1.65,SKIP,rules,,max open positions reached,,13.68
+2,live-20261104-200227,live,2026-11-04T15:20:00-05:00,PLTR,172.21,175.4,-1.82,2.04,SKIP,rules,,max open positions reached,,3.71
+2,live-20261104-200227,live,2026-11-04T15:25:00-05:00,ORCL,124.02,126.19,-1.72,2.85,SKIP,rules,,max open positions reached,,4.9
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,CIEN,270.79,300.08,-9.76,2.42,SKIP,rules,,max open positions reached,,23.57
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,APTV,43.85,41.34,6.07,3.88,SKIP,rules,,max open positions reached,,23.56
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,BE,198.44,214.01,-7.28,2.9,SKIP,rules,,max open positions reached,,21.13
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,GEV,832.15,918.2,-9.37,2.07,SKIP,rules,,max open positions reached,,19.37
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,SNDK,1036.535,1126.52,-7.99,2.23,SKIP,rules,,max open positions reached,,17.79
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,FISV,62.65,58.4,7.28,1.98,SKIP,rules,,max open positions reached,,14.4
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,ALAB,219.05,233.62,-6.24,1.68,SKIP,rules,,max open positions reached,,10.5
+2,live-20261104-200227,live,2026-11-04T15:30:00-05:00,LDOS,136.81,134.72,1.55,1.78,SKIP,rules,,max open positions reached,,2.77
+2,live-20261104-200227,live,2026-11-04T15:40:00-05:00,HWM,212.43,223.12,-4.79,2.6,SKIP,rules,,max open positions reached,,12.46
