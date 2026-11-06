@@ -6004,3 +6004,13 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261105-153758,live,2026-11-05T15:30:00-05:00,W,113.4,123.56,-8.22,1.59,SKIP,rules,,max open positions reached,,13.09
 2,live-20261105-153758,live,2026-11-05T15:30:00-05:00,CVNA,71.23,77.56,-8.16,1.29,SKIP,rules,,max open positions reached,,10.56
 2,live-20261105-153758,live,2026-11-05T15:30:00-05:00,TRMB,53.155,54.25,-2.02,1.53,SKIP,rules,,max open positions reached,,3.09
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,SMCI,27.175,29.6,-8.19,3.01,SKIP,rules,,max open positions reached,,24.68
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,SWK,114.895,118.33,-2.9,3.91,SKIP,rules,,max open positions reached,,11.36
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,UPST,21.88,23.38,-6.42,1.26,SKIP,rules,,max open positions reached,,8.07
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,HUT,46.8271,48.94,-4.32,1.75,SKIP,rules,,max open positions reached,,7.56
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,LYFT,17.755,18.74,-5.26,1.39,SKIP,rules,,max open positions reached,,7.3
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,XYZ,84.38,87.63,-3.71,1.43,SKIP,rules,,max open positions reached,,5.29
+2,live-20261105-201047,live,2026-11-05T15:35:00-05:00,CNC,73.94,76.01,-2.72,1.85,SKIP,rules,,max open positions reached,,5.05
+2,live-20261105-201047,live,2026-11-05T15:40:00-05:00,FIX,967.19,1091.3101,-11.37,9.78,SKIP,rules,,max open positions reached,,111.26
+2,live-20261105-201047,live,2026-11-05T15:40:00-05:00,NRG,80.27,83.25,-3.58,5.07,SKIP,rules,,max open positions reached,,18.14
+2,live-20261105-201047,live,2026-11-05T15:40:00-05:00,MOS,22.255,21.62,2.94,1.37,SKIP,rules,,max open positions reached,,4.02
