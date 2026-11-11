@@ -6744,3 +6744,13 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261110-152648,live,2026-11-10T15:15:00-05:00,MBX,57.25,54.06,5.9,1.62,SKIP,rules,,max open positions reached,,9.56
 2,live-20261110-152648,live,2026-11-10T15:15:00-05:00,BE,184.7,193.88,-4.73,1.71,SKIP,rules,,max open positions reached,,8.12
 2,live-20261110-152648,live,2026-11-10T15:20:00-05:00,EMBJ,83.07,77.07,7.79,7.51,SKIP,rules,,max open positions reached,,58.45
+2,live-20261110-195326,live,2026-11-10T15:25:00-05:00,CHTR,133.96,121.2,10.53,1.89,SKIP,rules,,max open positions reached,,19.88
+2,live-20261110-195326,live,2026-11-10T15:25:00-05:00,AKAM,83.83,80.29,4.41,3.68,SKIP,rules,,max open positions reached,,16.22
+2,live-20261110-195326,live,2026-11-10T15:25:00-05:00,AXON,298.59,303.18,-1.51,1.38,SKIP,rules,,max open positions reached,,2.09
+2,live-20261110-195326,live,2026-11-10T15:25:00-05:00,CIEN,273.5475,269.33,1.57,1.28,SKIP,rules,,max open positions reached,,2.0
+2,live-20261110-195326,live,2026-11-10T15:30:00-05:00,QBTS,10.285,11.47,-10.33,1.55,SKIP,rules,,max open positions reached,,16.0
+2,live-20261110-195326,live,2026-11-10T15:30:00-05:00,GEV,784.41,829.34,-5.42,1.71,SKIP,rules,,max open positions reached,,9.27
+2,live-20261110-195326,live,2026-11-10T15:35:00-05:00,SNDK,853.9,886.51,-3.68,2.19,SKIP,rules,,max open positions reached,,8.05
+2,live-20261110-195326,live,2026-11-10T15:35:00-05:00,IONQ,34.775,35.34,-1.6,1.91,SKIP,rules,,max open positions reached,,3.05
+2,live-20261110-195326,live,2026-11-10T15:35:00-05:00,PWR,581.49,591.48,-1.69,1.38,SKIP,rules,,max open positions reached,,2.34
+2,live-20261110-195326,live,2026-11-10T15:40:00-05:00,TQQQ,56.185,57.58,-2.42,1.52,SKIP,rules,,max open positions reached,,3.69
