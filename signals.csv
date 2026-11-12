@@ -6930,3 +6930,9 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261111-150959,live,2026-11-11T14:50:00-05:00,NVDA,175.81,168.89,4.1,9.91,SKIP,rules,,max open positions reached,,40.62
 2,live-20261111-150959,live,2026-11-11T14:55:00-05:00,AMD,559.0,515.21,8.5,2.14,SKIP,rules,,max open positions reached,,18.21
 2,live-20261111-150959,live,2026-11-11T15:00:00-05:00,SE,73.7375,76.8,-3.99,2.13,SKIP,rules,,max open positions reached,,8.49
+2,live-20261111-205633,live,2026-11-11T15:05:00-05:00,RGTI,11.295,12.15,-7.04,1.88,SKIP,rules,,max open positions reached,,13.25
+2,live-20261111-205633,live,2026-11-11T15:05:00-05:00,CLX,104.29,106.6,-2.17,1.33,SKIP,rules,,max open positions reached,,2.88
+2,live-20261111-205633,live,2026-11-11T15:25:00-05:00,AMD,555.615,515.21,7.84,2.04,SKIP,rules,,max open positions reached,,16.01
+2,live-20261111-205633,live,2026-11-11T15:30:00-05:00,SE,73.61,76.8,-4.15,2.05,SKIP,rules,,max open positions reached,,8.53
+2,live-20261111-205633,live,2026-11-11T15:35:00-05:00,RGTI,11.205,12.15,-7.78,1.84,SKIP,rules,,max open positions reached,,14.31
+2,live-20261111-205633,live,2026-11-11T15:40:00-05:00,CLX,109.21,106.6,2.45,3.69,SKIP,rules,,max open positions reached,,9.04
