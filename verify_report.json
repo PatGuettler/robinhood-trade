@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-12T21:09:38.705051-05:00",
+  "generated_at": "2026-11-13T20:49:28.366198-05:00",
   "account_id": 2,
   "overall": "warn",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 2342,
+      "checked": 2420,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -71,8 +71,8 @@
       "title": "Live: replaying the same period from scratch reproduces the same trades",
       "status": "warn",
       "checked": 5,
-      "failed": 12,
-      "detail": "Re-ran 562 tickers with freshly downloaded yahoo bars",
+      "failed": 36,
+      "detail": "Re-ran 578 tickers with freshly downloaded yahoo bars",
       "failures": [
         "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
         "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
@@ -85,7 +85,20 @@
         "replay produced extra SELL MXL @ 2026-10-02T10:05:00-04:00",
         "replay produced extra BUY NVTS @ 2026-10-02T10:10:00-04:00",
         "replay produced extra SELL PENG @ 2026-10-02T15:30:00-04:00",
-        "replay produced extra BUY VSH @ 2026-10-02T15:35:00-04:00"
+        "replay produced extra BUY RXO @ 2026-10-02T15:35:00-04:00",
+        "replay produced extra SELL RXO @ 2026-10-05T09:30:00-04:00",
+        "replay produced extra BUY WDC @ 2026-10-05T09:35:00-04:00",
+        "replay produced extra SELL WDC @ 2026-10-05T11:15:00-04:00",
+        "replay produced extra BUY DKNG @ 2026-10-05T11:20:00-04:00",
+        "replay produced extra SELL DKNG @ 2026-11-03T09:30:00-05:00",
+        "replay produced extra BUY LSCC @ 2026-11-03T09:35:00-05:00",
+        "replay produced extra SELL LSCC @ 2026-11-03T09:35:00-05:00",
+        "replay produced extra BUY FISV @ 2026-11-03T09:40:00-05:00",
+        "replay produced extra SELL FISV @ 2026-11-03T11:45:00-05:00",
+        "replay produced extra BUY ORCL @ 2026-11-03T11:50:00-05:00",
+        "replay produced extra SELL ORCL @ 2026-11-03T12:45:00-05:00",
+        "replay produced extra BUY PTCT @ 2026-11-03T12:50:00-05:00",
+        "replay produced extra SELL PTCT @ 2026-11-04T09:30:00-05:00"
       ]
     },
     {
