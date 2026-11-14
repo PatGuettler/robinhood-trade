@@ -7493,3 +7493,14 @@ account_id,run_id,mode,timestamp,ticker,price,prev_close,change_pct,vol_ratio,de
 2,live-20261113-152747,live,2026-11-13T15:15:00-05:00,CGON,73.18,70.15,4.32,1.58,SKIP,rules,,max open positions reached,,6.84
 2,live-20261113-152747,live,2026-11-13T15:15:00-05:00,AMAT,368.545,380.95,-3.26,1.68,SKIP,rules,,max open positions reached,,5.46
 2,live-20261113-152747,live,2026-11-13T15:20:00-05:00,CLBT,11.775,10.89,8.13,2.06,SKIP,rules,,max open positions reached,,16.73
+2,live-20261113-200043,live,2026-11-13T15:25:00-05:00,ELF,119.125,113.53,4.93,1.99,SKIP,rules,,max open positions reached,,9.79
+2,live-20261113-200043,live,2026-11-13T15:25:00-05:00,MSTR,112.38,114.41,-1.77,1.52,SKIP,rules,,max open positions reached,,2.7
+2,live-20261113-200043,live,2026-11-13T15:30:00-05:00,AMD,530.17,585.3,-9.42,6.68,SKIP,rules,,max open positions reached,,62.9
+2,live-20261113-200043,live,2026-11-13T15:30:00-05:00,IONQ,29.12,30.86,-5.64,3.12,SKIP,rules,,max open positions reached,,17.58
+2,live-20261113-200043,live,2026-11-13T15:30:00-05:00,NU,13.055,11.83,10.36,1.62,SKIP,rules,,max open positions reached,,16.81
+2,live-20261113-200043,live,2026-11-13T15:30:00-05:00,ANET,195.93,206.63,-5.18,1.28,SKIP,rules,,max open positions reached,,6.65
+2,live-20261113-200043,live,2026-11-13T15:35:00-05:00,COHR,216.87,232.08,-6.55,3.03,SKIP,rules,,max open positions reached,,19.85
+2,live-20261113-200043,live,2026-11-13T15:40:00-05:00,NVDA,161.82,166.19,-2.63,22.94,SKIP,rules,,max open positions reached,,26.3
+2,live-20261113-200043,live,2026-11-13T15:40:00-05:00,DELL,342.36,371.17,-7.76,1.76,SKIP,rules,,max open positions reached,,13.63
+2,live-20261113-200043,live,2026-11-13T15:40:00-05:00,BE,190.575,201.93,-5.62,2.11,SKIP,rules,,max open positions reached,,11.85
+2,live-20261113-200043,live,2026-11-13T15:40:00-05:00,KDP,36.585,35.42,3.29,2.76,SKIP,rules,,max open positions reached,,9.08
