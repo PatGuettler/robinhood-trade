@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-18T21:50:44.317177-05:00",
+  "generated_at": "2026-11-19T21:38:37.311941-05:00",
   "account_id": 2,
   "overall": "warn",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 2654,
+      "checked": 2732,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -72,7 +72,7 @@
       "status": "warn",
       "checked": 5,
       "failed": 12,
-      "detail": "Re-ran 582 tickers with freshly downloaded yahoo bars",
+      "detail": "Re-ran 588 tickers with freshly downloaded yahoo bars",
       "failures": [
         "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
         "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
@@ -137,9 +137,9 @@
       "name": "independent_prices",
       "title": "Backtest bt-20261002-095549: fill prices match an independent data source",
       "status": "pass",
-      "checked": 42,
+      "checked": 40,
       "failed": 0,
-      "detail": "42 fills checked against a second daily price source \u2014 the independent source (Stooq) was unavailable, so this compared against the same vendor's daily data; add free Alpaca keys on Setup for a truly independent check",
+      "detail": "40 fills checked against a second daily price source \u2014 the independent source (Stooq) was unavailable, so this compared against the same vendor's daily data; add free Alpaca keys on Setup for a truly independent check; 2 could not be checked (synthetic data or no reference bar)",
       "failures": []
     }
   ]
