@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T21:51:32.175638-05:00",
+  "generated_at": "2026-11-24T00:32:27.471191-05:00",
   "account_id": 2,
   "overall": "fail",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 2810,
+      "checked": 2888,
       "failed": 0,
       "detail": "",
       "failures": []
@@ -69,24 +69,11 @@
     {
       "name": "replay",
       "title": "Live: replaying the same period from scratch reproduces the same trades",
-      "status": "warn",
-      "checked": 5,
-      "failed": 12,
-      "detail": "Re-ran 590 tickers with freshly downloaded yahoo bars",
-      "failures": [
-        "original BUY CLSK @ 2026-10-02T10:00:00-04:00 not reproduced",
-        "original BUY MARA @ 2026-10-02T10:00:00-04:00 not reproduced",
-        "original BUY RIOT @ 2026-10-02T10:00:00-04:00 not reproduced",
-        "original BUY S @ 2026-10-02T10:00:00-04:00 not reproduced",
-        "replay produced extra BUY APLD @ 2026-10-02T10:00:00-04:00",
-        "replay produced extra BUY IBRX @ 2026-10-02T10:00:00-04:00",
-        "replay produced extra BUY MXL @ 2026-10-02T10:00:00-04:00",
-        "replay produced extra BUY PENG @ 2026-10-02T10:00:00-04:00",
-        "replay produced extra SELL MXL @ 2026-10-02T10:05:00-04:00",
-        "replay produced extra BUY NVTS @ 2026-10-02T10:10:00-04:00",
-        "replay produced extra SELL PENG @ 2026-10-02T15:30:00-04:00",
-        "replay produced extra BUY VSH @ 2026-10-02T15:35:00-04:00"
-      ]
+      "status": "skip",
+      "checked": 0,
+      "failed": 0,
+      "detail": "account older than the 5-minute data window (~60 days)",
+      "failures": []
     },
     {
       "name": "cash_ledger",
