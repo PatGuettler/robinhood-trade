@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T22:47:48.723597-05:00",
+  "generated_at": "2026-11-27T22:32:00.855637-05:00",
   "account_id": 2,
   "overall": "fail",
   "checks": [
@@ -43,7 +43,7 @@
       "name": "equity_math",
       "title": "Live: equity = cash + positions on every snapshot",
       "status": "pass",
-      "checked": 3044,
+      "checked": 3087,
       "failed": 0,
       "detail": "",
       "failures": []
